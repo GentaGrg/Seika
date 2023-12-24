@@ -2,26 +2,24 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
-        <title>Blog</title>
+        <title>CampusConnect</title>
         
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     
     </head>
-    <body>
-    @extends('layouts.app')
-
-@section('content')
-    <h2>Posts</h2>
-
-    <a href="{{ route('posts.create') }}">Create a New Post</a>
-
-    @foreach ($posts as $post)
-        <div>
-            <h3>{{ $post->title }}</h3>
-            <p>{{ $post->content }}</p>
+    <body class="antialiased">
+        <h1>CampusConnect(大学生同士を繋ぐ)</h1>
+        <a href="/posts/create">create</a>
+        <div class='posts'>
+            @foreach ($posts as $post)
+                <div class='post'>
+                    <h2 class='title'><a href="/posts/{{ $post->id }}">
+                    {{ $post->title }}</a></h2>
+                    <p class='body'>{{ $post->body }}</p>
+                </div>
+            @endforeach
         </div>
-    @endforeach
-@endsection
+        <div class='paginate'>{{ $posts->links()}}</div>
     </body>
 </html>
