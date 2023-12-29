@@ -36,13 +36,13 @@
             <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿する</span>
         </button>
     </div>
-</form>
+　　</form>
 
-<div style="margin: 40px auto; text-align: center;">
+　　<div style="margin: 40px auto; text-align: center;">
     <button type="submit">
         <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿一覧に戻る</span>
     </button>
-</div>
+　　</div>
 
     <script>
     function adjustSelectWidth(selectElement) {
@@ -53,7 +53,7 @@
         var newWidth = maxWidth * 8 + 17; 
         selectElement.style.width = newWidth + 'px';
     }
-</script>
+　　</script>
     
     <script>
             // カテゴリー選択時に表示を更新
