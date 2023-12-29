@@ -46,7 +46,12 @@ public function update(PostRequest $request, Post $post)
 public function index(Post $post)
     {
         return view('posts.index')->with([
-        'posts' => $post->getPaginateByLimit(),
+        'posts' => Post::paginate(10),
     ]);
+}
+
+public function mypage()
+{
+    return view('mypage.index')->with('user', Auth::user());
 }
 }
