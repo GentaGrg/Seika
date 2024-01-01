@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MyPageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controller\MyPostsController;
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -19,6 +20,8 @@ Route::middleware(['auth'])->group(function(){
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('update');
     Route::delete('/posts/{post}', [PostController::class, 'delete'])->name('delete');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('edit');
+    Route::get('/myposts', [MyPostsController::class, 'index'])->name('myposts');
+    Route::get('/myposts', [PostController::class, 'myPosts'])->name('myposts');
     
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');

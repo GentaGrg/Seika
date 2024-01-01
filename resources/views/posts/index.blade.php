@@ -7,6 +7,8 @@
         @endif
     </x-slot>
 
+    <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0;">CampusConnect</h1>
+    
     <a href="{{ route('mypage') }}">マイページ</a>
     
     @if (Route::is('mypage'))
@@ -17,7 +19,6 @@
             <!-- その他マイページに表示したい情報をここに追加 -->
         </div>
     @else
-        <h1 style="border-bottom: 2px solid #ccc;">CampusConnect</h1>
         
         <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
             <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問投稿</a>
