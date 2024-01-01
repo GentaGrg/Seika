@@ -1,72 +1,73 @@
 <x-app-layout>
     <x-slot name="header">
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-        <button onclick="window.location='{{ route('index') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">CampusConnect</button>
-    </div>
-</x-slot>
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <button onclick="window.location='{{ route('index') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">CampusConnect</button>
+        </div>
+    </x-slot>
 
     @if(Auth::check())
         <!-- ユーザーがログインしている場合に表示されるコンテンツ -->
+        {{-- カテゴリー選択フォーム --}}
+        <form action="{{ route('store') }}" method="post">
             @csrf
-                        {{-- カテゴリー選択フォーム --}}
-    <form action="{{ route('store') }}" method="post">
-    <div class="form-group" style="margin-bottom: 40px; margin-top: 50px; text-align: center;">
-        <label for="category" style="display: block; font-size: 16px;">カテゴリー</label>
-        <select name="category_id" id="category" required style="font-size: 16px; text-align: center;" onchange="adjustSelectWidth(this)">
-        <option value="1">大学の課題</option>
-        <option value="2">日ごろの悩み</option>
-        <option value="3">就活のアドバイス</option>
-        </select>
-    </div>
+            <div class="form-group" style="margin-bottom: 40px; margin-top: 50px; text-align: center;">
+                <label for="category" style="display: block; font-size: 16px;">カテゴリー</label>
+                <select name="category_id" id="category" required style="font-size: 16px; text-align: center;" onchange="adjustSelectWidth(this)">
+                    <option value="1">大学の課題</option>
+                    <option value="2">日ごろの悩み</option>
+                    <option value="3">就活のアドバイス</option>
+                </select>
+            </div>
 
-    <div style="text-align: center; margin-bottom: 40px;">
-        <label for="title" style="display: block; font-size: 18px;">タイトル</label>
-        <input type="text" name="title" id="title" required style="width: 80%; margin: 0 auto; font-size: 16px;">
-    </div>
+            <div style="text-align: center; margin-bottom: 40px;">
+                <label for="title" style="display: block; font-size: 18px;">タイトル</label>
+                <input type="text" name="title" id="title" required style="width: 80%; margin: 0 auto; font-size: 16px;">
+            </div>
 
-    {{-- 本文入力フォーム --}}
-    <div style="margin-top: 40px; margin-bottom: 30px; text-align: center;">
-        <label for="body" style="display: block; font-size: 18px;">本文</label>
-        <textarea name="body" id="body" rows="5" required style="width: 80%; font-size: 16px;"></textarea>
-    </div>
+            {{-- 本文入力フォーム --}}
+            <div style="margin-top: 40px; margin-bottom: 30px; text-align: center;">
+                <label for="body" style="display: block; font-size: 18px;">本文</label>
+                <textarea name="body" id="body" rows="5" required style="width: 80%; font-size: 16px;"></textarea>
+            </div>
 
-    {{-- 送信ボタン --}}
-    <div style="margin: 30px auto; text-align: center;">
-        <button type="submit">
-            <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿する</span>
-        </button>
-    </div>
-　　</form>
+            {{-- 送信ボタン --}}
+            <div style="margin: 30px auto; text-align: center;">
+                <button type="submit">
+                    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿する</span>
+                </button>
+            </div>
+        </form>
 
-　　<div style="margin: 40px auto; text-align: center;">
-    <button type="submit">
+        <div style="margin: 40px auto; text-align: center;">
+    <a href="{{ route('myposts') }}">
         <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿一覧に戻る</span>
-    </button>
-　　</div>
+    </a>
+</div>
 
-    <script>
-    function adjustSelectWidth(selectElement) {
-        var maxWidth = 17;
-        for (var i = 0; i < selectElement.options.length; i++) {
-            maxWidth = Math.max(maxWidth, selectElement.options[i].text.length);
-        }
-        var newWidth = maxWidth * 8 + 17; 
-        selectElement.style.width = newWidth + 'px';
-    }
-　　</script>
-    
-    <script>
+        <script>
+            function adjustSelectWidth(selectElement) {
+                var maxWidth = 17;
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    maxWidth = Math.max(maxWidth, selectElement.options[i].text.length);
+                }
+                var newWidth = maxWidth * 8 + 17; 
+                selectElement.style.width = newWidth + 'px';
+            }
+        </script>
+
+        <script>
             // カテゴリー選択時に表示を更新
             document.getElementById('category').addEventListener('change', function() {
                 var selectedCategory = document.getElementById('category').value;
                 document.getElementById('selectedCategory').innerText = selectedCategory;
             });
-    </script>
-    <style>
-        .form-group {
+        </script>
+
+        <style>
+            .form-group {
                 margin-bottom: 20px;
             }
-    </style>
+        </style>
     @else
         <!-- ユーザーがログインしていない場合に表示されるコンテンツ -->
         <p>ログインしてください。</p>

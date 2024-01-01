@@ -29,12 +29,12 @@ public function delete(Post $post)
     return redirect('/');
 }
 
-public function store(PostRequest $request, Post $post)
-    {
-        $input = $request['post'];
-        $post->fill($input)->save();
-        return redirect('/posts/' . $post->id);
-    }
+public function store(Request $request)
+{
+    // 投稿を保存する処理...
+
+    return redirect()->route('myposts');
+}
 
 public function update(PostRequest $request, Post $post)
 {
@@ -53,5 +53,12 @@ public function index(Post $post)
 public function mypage()
 {
     return view('mypage.index')->with('user', Auth::user());
+}
+public function myPosts()
+{
+    // ユーザーの投稿一覧を取得する処理
+    $userPosts = auth()->user()->posts;
+
+    return view('myposts.index', compact('userPosts'));
 }
 }
