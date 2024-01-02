@@ -11,15 +11,16 @@
     
     <a href="{{ route('mypage') }}">マイページ</a>
     
-    @if (Route::is('mypage'))
+  
         <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-
+        
+    <div style="width: 12cm; height: 15cm; float: left; margin-top: 10px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
+    <p>この中に投稿を表示</p>
+　　</div>
         <div>
             <p>ログインユーザー: {{ Auth::user()->name }}</p>
-            <!-- その他マイページに表示したい情報をここに追加 -->
         </div>
-    @else
-        
+   
         <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
             <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問投稿</a>
         </div>
@@ -27,17 +28,32 @@
         <div class='posts'>
             @foreach ($posts as $post)
                 <div class='post'>
-                    <h2 class='title'><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></h2>
-                    <a href="{{ route('categories.show', $post->category->id) }}">{{ $post->category->name }}</a>
+                    <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
+                    <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
                     <p class='body'>{{ $post->body }}</p>
-                    <form action="{{ route('posts.destroy', $post->id) }}" id="form_{{ $post->id }}" method="post">
+                    <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post">
                         @csrf
                         @method('DELETE')
                         <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
                     </form>
                 </div>
             @endforeach
-            ログインユーザー:{{ Auth::user()->name }}
+    <div style="width: 8.5cm; height: 9cm; float: right; margin-top: 10px; margin-right: 120px; border: 2px solid #ccc; padding: 10px;">
+    <p>1位</p>
+    <p>2位</p>
+    <p>3位</p>
+</div>
+
+<div style="width: 8.5cm; height: 9cm; float: right; margin-top: 370px; margin-right: -320px; border: 2px solid #ccc; padding: 10px;">
+    <p style="font-weight: bold;">人気ワードランキング</p>
+    <ul>
+        <li>キーワード1</li>
+        <li>キーワード2</li>
+        <li>キーワード3</li>
+    </ul>
+</div>
+         
+    ログインユーザー:{{ Auth::user()->name }}
         </div>
 
         <div class='paginate'>
@@ -53,5 +69,4 @@
                 }
             }
         </script>
-    @endif
 </x-app-layout>
