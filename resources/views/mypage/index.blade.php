@@ -71,7 +71,7 @@
     <p style="margin-bottom: 10px;">学部: {{ $user->faculty }}</p>
 </div>
 <button type="button" id="registrationButton" style="margin-top: 10px;">
-    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">登録ボタン</span>
+    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">登録</span>
 </button>
 </div>
 </x-app-layout>

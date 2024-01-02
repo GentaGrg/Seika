@@ -12,29 +12,27 @@
             @csrf
             <div class="form-group" style="margin-bottom: 40px; margin-top: 50px; text-align: center;">
                 <label for="category" style="display: block; font-size: 16px;">カテゴリー</label>
-                <select name="category_id" id="category" required style="font-size: 16px; text-align: center;" onchange="adjustSelectWidth(this)">
-                    <option value="1">大学の課題</option>
-                    <option value="2">日ごろの悩み</option>
-                    <option value="3">就活のアドバイス</option>
+                <select name="post[category_id]" id="category" required style="font-size: 16px; text-align: center;" onchange="adjustSelectWidth(this)">
+                    @foreach($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->name }}</option>
+        @endforeach
                 </select>
             </div>
 
             <div style="text-align: center; margin-bottom: 40px;">
                 <label for="title" style="display: block; font-size: 18px;">タイトル</label>
-                <input type="text" name="title" id="title" required style="width: 80%; margin: 0 auto; font-size: 16px;">
+                <input type="text" name="post[title]" id="title" required style="width: 80%; margin: 0 auto; font-size: 16px;">
             </div>
 
             {{-- 本文入力フォーム --}}
             <div style="margin-top: 40px; margin-bottom: 30px; text-align: center;">
                 <label for="body" style="display: block; font-size: 18px;">本文</label>
-                <textarea name="body" id="body" rows="5" required style="width: 80%; font-size: 16px;"></textarea>
+                <textarea name="post[body]" id="body" rows="5" required style="width: 80%; font-size: 16px;"></textarea>
             </div>
 
             {{-- 送信ボタン --}}
             <div style="margin: 30px auto; text-align: center;">
-                <button type="submit">
-                    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿する</span>
-                </button>
+                <input type="submit" value="保存"/>
             </div>
         </form>
 

@@ -11,7 +11,7 @@ class PostController extends Controller
 {
     // app/Http/Controllers/PostController.php
 
-public function create()
+public function create(Category $category)
 {
     $categories = Category::all(); 
 
@@ -29,11 +29,12 @@ public function delete(Post $post)
     return redirect('/');
 }
 
-public function store(Request $request)
+public function store(Request $request, Post $post)
 {
-    // 投稿を保存する処理...
-
-    return redirect()->route('myposts');
+ $input= $request['post'];
+ 
+ $post->fill($input)->save();
+ return redirect()->route('myposts');
 }
 
 public function update(PostRequest $request, Post $post)
@@ -50,14 +51,14 @@ public function index(Post $post)
     ]);
 }
 
-public function mypage()
+public function mypage(Post $post)
 {
     return view('mypage.index')->with('user', Auth::user());
 }
-public function myPosts()
+public function myPosts(Post $post)
 {
-    // ユーザーの投稿一覧を取得する処理
-    $userPosts = auth()->user()->posts;
+    
+    $userPosts = $post->get();
 
     return view('myposts.index', compact('userPosts'));
 }
