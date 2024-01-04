@@ -8,36 +8,33 @@
     </x-slot>
 
     <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0;">CampusConnect</h1>
-    
-    <a href="{{ route('mypage') }}">マイページ</a>
-    
-  
-        <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-        
-    <div style="width: 12cm; height: 15cm; float: left; margin-top: 10px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
-    <p>この中に投稿を表示</p>
-　　</div>
-        <div>
-            <p>ログインユーザー: {{ Auth::user()->name }}</p>
-        </div>
-   
-        <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問投稿</a>
-        </div>
 
-        <div class='posts'>
-            @foreach ($posts as $post)
-                <div class='post'>
-                    <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
-                    <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
-                    <p class='body'>{{ $post->body }}</p>
-                    <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
-                    </form>
-                </div>
-            @endforeach
+<a href="{{ route('mypage') }}">
+    @if (Route::is('mypage'))
+        <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
+    @else
+        <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
+    @endif
+</a>
+        
+   <div style="width: 12cm; height: 15cm; float: left; margin-top: 80px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
+        @foreach ($posts as $post)
+            <div class='post'>
+                <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
+                <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
+                <p class='body'>{{ $post->body }}</p>
+                <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
+                </form>
+            </div>
+        @endforeach
+    </div>
+
+    <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問・相談投稿</a>
+    </div>
     <div style="width: 8.5cm; height: 9cm; float: right; margin-top: 10px; margin-right: 120px; border: 2px solid #ccc; padding: 10px;">
     <p>1位</p>
     <p>2位</p>
@@ -53,14 +50,11 @@
     </ul>
 </div>
          
-    ログインユーザー:{{ Auth::user()->name }}
-        </div>
+<div class='paginate'>
+    {{ $posts->links() }}
+</div>
 
-        <div class='paginate'>
-            {{ $posts->links() }}
-        </div>
-
-        <script>
+　　<script>
             function deletePost(id) {
                 'use strict';
                 
@@ -68,5 +62,5 @@
                     document.getElementById(`form_${id}`).submit();
                 }
             }
-        </script>
+    </script>
 </x-app-layout>
