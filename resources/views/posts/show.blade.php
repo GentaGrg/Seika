@@ -1,6 +1,6 @@
     <x-app-layout>
             <x-slot name="header">
-                index
+                投稿一覧
             </x-slot>    
         <h1 class="title">
             {{ $post->title }}

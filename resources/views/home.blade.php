@@ -9,29 +9,31 @@
 
     <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0;">CampusConnect</h1>
 
-<a href="{{ route('mypage') }}">
-    @if (Route::is('mypage'))
-        <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-    @else
-        <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-    @endif
-</a>
-        
-   <div style="width: 12cm; height: 15cm; float: left; margin-top: 80px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
-        @foreach ($posts as $post)
-            <div class='post'>
-                <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
-                <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
-                <p class='body'>{{ $post->body }}</p>
-                <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
-                </form>
-            </div>
-        @endforeach
-    </div>
+    <a href="{{ route('mypage') }}">
+        @if (Route::is('mypage'))
+            <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
+        @else
+            <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
+        @endif
+    </a>
 
+    <div style="width: 12cm; height: 15cm; float: left; margin-top: 80px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
+        @if (isset($posts) && count($posts) > 0)
+            @foreach ($posts as $post)
+                <div class='post'>
+                    <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
+                    <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
+                    <p class='body'>{{ $post->body }}</p>
+                    <form action="{{ route('delete', $post->id) }}" id="form_{{ $post->id }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
+                    </form>
+                </div>
+            @endforeach
+        @else
+        @endif
+    </div>
     <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
         <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問・相談投稿</a>
     </div>
@@ -49,11 +51,6 @@
         <li>キーワード3</li>
     </ul>
 </div>
-         
-<div class='paginate'>
-    {{ $posts->links() }}
-</div>
-
 　　<script>
             function deletePost(id) {
                 'use strict';
