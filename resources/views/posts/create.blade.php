@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <button onclick="window.location='{{ route('home') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">キャンセル</button>
-      <button onclick="window.location='{{ route('home') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">CampusConnect</button>
+      <button onclick="window.location='{{ route('index') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">キャンセル</button>
+      <button onclick="window.location='{{ route('index') }}'" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">CampusConnect</button>
       <button type="submit" form="postForm" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">投稿</button>
     </div>
     </x-slot>
@@ -10,7 +10,7 @@
     @if(Auth::check())
     <!-- ユーザーがログインしている場合に表示されるコンテンツ -->
     {{-- カテゴリー選択フォーム --}}
-    <form action="{{ route('store') }}" method="post">
+    <form action="{{ route('store') }}" method="post" id="postForm">
     @csrf
    <div style="width: 80%; margin: 0 auto; margin-top: 50px; text-align: center;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -54,20 +54,18 @@
     <div style="margin: 30px auto; text-align: center;">
         <button type="submit" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">投稿</button>
     </div>
-</form>
+    </form>
 
-<!-- 表示用のエリア -->
-<div id="imageDisplayArea" style="text-align: center;">
-    <!-- アップロードされた写真が表示される -->
-</div>
 
-        </form>
+    <div id="imageDisplayArea" style="text-align: center;">
+        <!-- アップロード写真が表示 -->
+    </div>
 
-        <div style="margin: 40px auto; text-align: center;">
+    <div style="margin: 40px auto; text-align: center;">
     <a href="{{ route('myposts') }}">
         <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿一覧に戻る</span>
     </a>
-</div>
+　　</div>
 
 　　<script>
     function onCancelClick() {

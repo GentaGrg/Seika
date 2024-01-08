@@ -16,14 +16,26 @@
         <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
     @endif
 </a>
-        
-   <div style="width: 12cm; height: 15cm; float: left; margin-top: 80px; margin-left: 120px; border: 2px solid #ccc; padding: 10px;">
-        @foreach ($posts as $post)
+     
+    @php
+    $categoryIds = [
+        'university' => 1,
+        'daily_issues' => 2,
+        'job_advice' => 3,
+    ];
+    @endphp
+　　
+   <div style="width: 12cm; height: 15cm; float: left; margin-top: 130px; margin-left: 200px; border: 2px solid #ccc; padding: 10px; overflow-y: auto;">
+        @foreach ($posts->reverse() as $post)
             <div class='post'>
+                <a href="{{ route('show', $post->category->id) }}" style="font-weight: bold; font-size: 1.1em;">
+                    {{ $post->category->name }}</a>
                 <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
-                <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
                 <p class='body'>{{ $post->body }}</p>
                 <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post">
+                <button type="button" onclick="likePost({{ $post->id }})">いいね</button>
+                <button type="button" onclick="showComments({{ $post->id }})">コメント</button>
+                <button type="button" onclick="savePost({{ $post->id }})">保存</button>
                     @csrf
                     @method('DELETE')
                     <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
@@ -32,8 +44,11 @@
         @endforeach
     </div>
 
-    <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">
-        <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none;">質問・相談投稿</a>
+    <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px; float; left;">
+        <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px;">質問・相談投稿</a>
+        <a href="{{ route('showCategoryPosts', $categoryIds['university']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: limegreen; color: white;">大学の課題</a>
+        <a href="{{ route('showCategoryPosts', $categoryIds['daily_issues']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: crimson; color: white;">日ごろの悩み</a>
+        <a href="{{ route('showCategoryPosts', $categoryIds['job_advice']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: deepskyblue; color: white;">就活のアドバイス</a>
     </div>
     <div style="width: 8.5cm; height: 9cm; float: right; margin-top: 10px; margin-right: 120px; border: 2px solid #ccc; padding: 10px;">
     <p>1位</p>
@@ -48,10 +63,6 @@
         <li>キーワード2</li>
         <li>キーワード3</li>
     </ul>
-</div>
-         
-<div class='paginate'>
-    {{ $posts->links() }}
 </div>
 
 　　<script>

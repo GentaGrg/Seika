@@ -1,15 +1,11 @@
-<x-app-layout>
-            <x-slot name="header">
-            index
-            </x-slot>
-            <div>
+    <div>
         @foreach($questions as $question)
     <div>
         <a href="https://teratail.com/questions/{{ $question['id'] }}">
             {{ $question['title'] }}
         </a>
     </div>
-@endforeach
+        @endforeach
             </div>
         <h1>Blog Name</h1>
         <a href="/posts/create">create</a>
@@ -38,4 +34,3 @@
             }
             }
         </script>
-        </x-app-layout>
