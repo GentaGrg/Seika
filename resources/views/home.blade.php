@@ -21,8 +21,8 @@
         @if (isset($posts) && count($posts) > 0)
             @foreach ($posts as $post)
                 <div class='post'>
-                    <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
                     <a href="{{ route('show', $post->category->id) }}">{{ $post->category->name }}</a>
+                    <h2 class='title'><a href="{{ route('show', $post->id) }}">{{ $post->title }}</a></h2>
                     <p class='body'>{{ $post->body }}</p>
                     <form action="{{ route('delete', $post->id) }}" id="form_{{ $post->id }}" method="post">
                         @csrf
@@ -32,6 +32,7 @@
                 </div>
             @endforeach
         @else
+            <p>投稿がありません。</p>
         @endif
     </div>
     <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px;">

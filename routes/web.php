@@ -28,11 +28,12 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/posts/create', [PostController::class, 'create'])->name('create');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('show');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('update');
-    Route::delete('/posts/{post}', [PostController::class,'delete']);
+    Route::delete('/posts/{post}', [PostController::class, 'delete'])->name('delete');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('edit');
     Route::get('/myposts', [MyPostsController::class, 'index'])->name('myposts');
     Route::get('/myposts', [PostController::class, 'myPosts'])->name('myposts');
-    Route::post('/your-upload-action', 'YourController@uploadAction')->name('your_upload_action');
+    Route::post('/your-upload-action', [PostController::class,'uploadAction'])->name('your_upload_action');
+    Route::get('/category-posts/{categoryId}', [PostController::class,'showCategoryPosts'])->name('showCategoryPosts');
 
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
@@ -47,8 +48,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/', 'PostController@deleteMethod')->name('delete.route');
 });
-
-Route::get('/oauth/{provider}', [OAuthController::class, 'redirectToProvider'])->name('oauth.redirect');
-Route::get('/oauth/{provider}/callback', [OAuthController::class, 'handleProviderCallback']);
-
 require __DIR__.'/auth.php';
