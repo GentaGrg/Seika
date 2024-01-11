@@ -4,16 +4,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\MyPostsController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controller\MyPostsController;
-use App\Http\Controller\AuthController;
-use App\Http\Controller\Auth\OAuthController;
 
-//ログイン
+// ログイン
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-//ユーザー登録
+// ユーザー登録
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -22,7 +22,7 @@ Route::get('/home', function () {
 })->middleware(['auth', 'verified'])->name('home');
 
 // PostControllerの各アクションに対するルートを個別に定義
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('index');
     Route::post('/posts', [PostController::class, 'store'])->name('store');
     Route::get('/posts/create', [PostController::class, 'create'])->name('create');
@@ -31,9 +31,8 @@ Route::middleware(['auth'])->group(function(){
     Route::delete('/posts/{post}', [PostController::class, 'delete'])->name('delete');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('edit');
     Route::get('/myposts', [MyPostsController::class, 'index'])->name('myposts');
-    Route::get('/myposts', [PostController::class, 'myPosts'])->name('myposts');
-    Route::post('/your-upload-action', [PostController::class,'uploadAction'])->name('your_upload_action');
-    Route::get('/category-posts/{categoryId}', [PostController::class,'showCategoryPosts'])->name('showCategoryPosts');
+    Route::post('/your-upload-action', [PostController::class, 'uploadAction'])->name('your_upload_action');
+    Route::get('/category-posts/{categoryId}', [PostController::class, 'showCategoryPosts'])->name('showCategoryPosts');
 
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
@@ -47,5 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', 'ProfileController@destroy')->name('profile.destroy');
+    Route::put('/updateUserDetails', [UserController::class, 'updateUserDetails'])->name('updateUserDetails');
+    Route::get('/editUserDetails', [UserController::class, 'editUserDetails'])->name('editUserDetails');
 });
+
 require __DIR__.'/auth.php';
