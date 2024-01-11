@@ -62,16 +62,53 @@
  
     <hr style="border-top: 2px solid #ccc; margin-top: 20px; margin-bottom: 20px;">
 
-<div>
-    <p style="margin-bottom: 10px;">名前: {{ $user->name }}</p>
-    <p style="margin-bottom: 10px;">ニックネーム: {{ $user->nickname }}</p>
-    <p style="margin-bottom: 10px;">生年月日: {{ $user->birthdate }}</p>
-    <p style="margin-bottom: 10px;">所属大学: {{ $user->university }}</p>
-    <p style="margin-bottom: 10px;">学年: {{ $user->grade }}</p>
-    <p style="margin-bottom: 10px;">学部: {{ $user->faculty }}</p>
-</div>
-<button type="button" id="registrationButton" style="margin-top: 10px;">
-    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">登録</span>
-</button>
-</div>
+    <div>
+        @if ($user->detailsAreRegistered())
+            <!-- 登録済みの場合 -->
+            <p style="margin-bottom: 10px;">名前: {{ $user->name }}</p>
+            <p style="margin-bottom: 10px;">ニックネーム: {{ $user->nickname }}</p>
+            <p style="margin-bottom: 10px;">生年月日: {{ $user->birthdate }}</p>
+            <p style="margin-bottom: 10px;">所属大学: {{ $user->university }}</p>
+            <p style="margin-bottom: 10px;">学年: {{ $user->grade }}</p>
+            <p style="margin-bottom: 10px;">学部: {{ $user->faculty }}</p>
+            <form action="{{ route('editUserDetails') }}" method="get">
+                <button type="submit">変更</button>
+            </form>
+        @else
+            <!-- 未登録の場合 -->
+            <p>詳細情報未登録</p>
+            <form action="{{ route('registerUserDetails') }}" method="post">
+                @csrf
+                <p style="margin-bottom: 10px;">
+                    名前: <input type="text" name="name" value="{{ old('name') }}">
+                </p>
+                <p style="margin-bottom: 10px;">
+                    ニックネーム: <input type="text" name="nickname" value="{{ old('nickname') }}">
+                </p>
+                <p style="margin-bottom: 10px;">
+                    生年月日: <input type="date" name="birthdate" value="{{ old('birthdate') }}">
+                </p>
+                <p style="margin-bottom: 10px;">
+                    所属大学: <input type="text" name="university" value="{{ old('university') }}">
+                </p>
+                <p style="margin-bottom: 10px;">
+                    学年: <input type="text" name="grade" value="{{ old('grade') }}">
+                </p>
+                <p style="margin-bottom: 10px;">
+                    学部: <input type="text" name="faculty" value="{{ old('faculty') }}">
+                </p>
+                <button type="submit">確定</button>
+            </form>
+        @endif
+    </div>
+    
+    
+    <script>
+    document.getElementById('registrationButton').addEventListener('click', function() {
+        // この部分にボタンがクリックされたときの処理を追加
+        console.log('ボタンがクリックされました。');
+        // ここに他の処理を追加することができます
+    });
+</script>
+    </div>
 </x-app-layout>

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,9 +40,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
+    // カテゴリリレーション
     public function category()
     {
         return $this->hasMany(Category::class);
+    }
+
+    // 詳細情報が登録されているかどうかを確認するメソッド
+    public function detailsAreRegistered()
+    {
+        return !empty($this->name) && !empty($this->email) && !empty($this->password);
     }
 }
