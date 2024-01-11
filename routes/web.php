@@ -46,6 +46,6 @@ Route::middleware('auth')->group(function () {
     // ProfileControllerのプロフィール編集アクション
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/', 'PostController@deleteMethod')->name('delete.route');
+    Route::delete('/profile', 'ProfileController@destroy')->name('profile.destroy');
 });
 require __DIR__.'/auth.php';
