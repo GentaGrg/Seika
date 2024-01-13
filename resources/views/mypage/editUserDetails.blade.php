@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- ここにページのコンテンツを記述 -->
+    <!-- ページのコンテンツ -->
     <div>
         <form action="{{ route('updateUserDetails') }}" method="post">
             @csrf

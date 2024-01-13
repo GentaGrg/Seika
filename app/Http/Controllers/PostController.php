@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Like;
+use App\Models\Comment;
 use Illuminate\Suport\Facades\Auth;
 
 class PostController extends Controller
@@ -71,5 +73,26 @@ class PostController extends Controller
     public function showCategoryPosts($categoryId) {
         $categoryPosts = Post::where('category_id', $categoryId)->get();
         return view('category_posts.index', ['categoryPosts' => $categoryPosts]);
+    }
+    
+    public function likePost($postId)
+    {
+        auth()->user()->likes()->toggle($postId);
+        return redirect()->back();
+    }
+    
+    public function commentPost(Request $request, $postId)
+    {
+        $request->validate([
+            'content' => 'required',
+        ]);
+    
+        Comment::create([
+            'user_id' => auth()->user()->id,
+            'post_id' => $postId,
+            'content' => $request->input('content'),
+        ]);
+    
+        return redirect()->back();
     }
 }

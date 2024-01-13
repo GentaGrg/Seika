@@ -33,6 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/myposts', [MyPostsController::class, 'index'])->name('myposts');
     Route::post('/your-upload-action', [PostController::class, 'uploadAction'])->name('your_upload_action');
     Route::get('/category-posts/{categoryId}', [PostController::class, 'showCategoryPosts'])->name('showCategoryPosts');
+    Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
+    Route::post('/comment/{postId}', 'PostController@commentPost')->name('comment.post');
 
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
