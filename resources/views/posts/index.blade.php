@@ -7,117 +7,148 @@
         @endif
     </x-slot>
 
-    <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0;">CampusConnect</h1>
+    <style>
+        body {
+            margin: 0; /* ページ全体のマージンを解除 */
+            font-family: 'Helvetica Neue', sans-serif; /* フォントの指定 */
+        }
 
-    <a href="{{ route('mypage') }}">
-        @if (Route::is('mypage'))
-            <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-        @else
-            <h1 style="border-bottom: 2px solid #ccc;">マイページ</h1>
-        @endif
-    </a>
-     
+        .like-button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .like-button {
+            color: white;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .like-button.active {
+            color: #1877f2;
+        }
+
+        .post {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            height: auto;
+        }
+
+        .user-time-info,
+        .category,
+        .title,
+        .body {
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 600px; /* コンテナの最大幅を指定 */
+            margin: 30px auto 0 auto;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .post-actions-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .post-actions-left a {
+            display: inline-block;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 8px;
+        }
+
+        .nav-menu {
+            float: left;
+            width: 150px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+        }
+
+        .timeline {
+            margin-left: 20px;
+        }
+
+        .timeline-heading {
+            text-align: center;
+            border-bottom: 3px solid #ccc;
+            font-size: 2em;
+            margin: 0;
+            padding: 10px;
+        }
+    </style>
+
     @php
-    $categoryIds = [
-        'university' => 1,
-        'daily_issues' => 2,
-        'job_advice' => 3,
-    ];
+        $categoryIds = [
+            'university' => 1,
+            'daily_issues' => 2,
+            'job_advice' => 3,
+        ];
     @endphp
-　　
-    <div style="width: 12cm; height: 15cm; float: left; margin-top: 130px; margin-left: 200px; border: 2px solid #ccc; padding: 10px; overflow-y: auto;">
-        @foreach ($posts->reverse() as $post)
-            <!-- 各投稿をクリック可能なリンクに変更 -->
-            <a href="{{ route('show', $post->id) }}" style="text-decoration: none; color: inherit;">
-                <div class='post' style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px;">
-                    <!-- ログインユーザーと投稿時間を表示 -->
-                    @if (Auth::check())
-                        <p class='user-time-info'>
-                            {{ Auth::user()->name }}, 
-                            {{ $post->created_at->diffForHumans() }}
-                        </p>
-                    @endif
-                    <!-- カテゴリー表示 -->
-                    <p class='category'>カテゴリー: {{ $post->category->name }}</p>
-                    <h2 class='title'>{{ $post->title }}</h2>
-                    <p class='body'>{{ $post->body }}</p>
 
-                    <!-- いいねボタン -->
-                    <form action="{{ route('like.post', $post->id) }}" method="post" style="display: inline-block;">
-                        @csrf
-                        <button type="submit">いいね</button>
-                    </form>
+    <div class="nav-menu">
+        <p><a href="{{ route('mypage') }}" style="font-size: 1.5em; margin-bottom: 10px;">マイページ</a></p>
+        <p><a href="{{ route('create') }}" style="font-size: 1.2em; margin-bottom: 10px;">質問・相談投稿</a></p>
+        <p><a href="{{ route('showCategoryPosts', $categoryIds['university']) }}" style="font-size: 1.2em; background-color: limegreen; color: white; margin-bottom: 10px;">大学の課題</a></p>
+        <p><a href="{{ route('showCategoryPosts', $categoryIds['daily_issues']) }}" style="font-size: 1.2em; background-color: crimson; color: white; margin-bottom: 10px;">日ごろの悩み</a></p>
+        <p><a href="{{ route('showCategoryPosts', $categoryIds['job_advice']) }}" style="font-size: 1.2em; background-color: deepskyblue; color: white; margin-bottom: 10px;">就活のアドバイス</a></p>
+    </div>
 
-                    <!-- コメントボタン -->
-                    <button type="button" onclick="toggleComments({{ $post->id }})" style="display: inline-block;">コメント</button>
+    <div class="timeline">
+        <h1 class="timeline-heading">CampusConnect</h1>
 
-                    <!-- 保存ボタン -->
-                    <button type="button" onclick="savePost({{ $post->id }})" style="display: inline-block;">保存</button>
+        <div class="container">
+            @foreach ($posts->reverse() as $post)
+                <a href="{{ route('show', $post->id) }}" style="text-decoration: none; color: inherit;">
+                    <div class='post'>
+                        @if (Auth::check())
+                            <p class='user-time-info'>
+                                {{ Auth::user()->name }},
+                                {{ $post->created_at->diffForHumans() }}
+                            </p>
+                        @endif
+                        <p class='category'>カテゴリー: {{ $post->category->name }}</p>
+                        <h2 class='title'>{{ $post->title }}</h2>
+                        <p class='body'>{{ $post->body }}</p>
 
-                    <!-- 削除ボタン -->
-                    <form action="{{ route('index')}}" id="form_{{ $post->id }}" method="post" style="display: inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" onclick="deletePost({{ $post->id }})">delete</button>
-                    </form>
-
-                    <!-- コメント欄 -->
-                    <div id="comments_{{ $post->id }}" style="display: none;">
-                        <!-- コメント入力フォーム -->
-                        <form action="{{ route('comment.post', $post->id) }}" method="post">
-                            @csrf
-                            <input type="text" name="content" placeholder="コメントを入力">
-                            <button type="submit">コメント</button>
-                        </form>
-
-                        <!-- コメント一覧表示 -->
-                        <!-- ここにコメント一覧の表示などを追加 -->
+                        <div class="post-actions">
+                            <div class="post-actions-left">
+                                <button type="button" onclick="toggleLike({{ $post->id }})" class="like-button @if($post->liked) active @endif" data-post-id="{{ $post->id }}">
+                                    &#x1F44D;
+                                </button>
+                                <span class="like-text @if($post->liked) active @endif">いいね</span>
+                            </div>
+                            <button type="button" onclick="toggleComments({{ $post->id }})">コメント</button>
+                            <button type="button" onclick="savePost({{ $post->id }})">保存</button>
+                        </div>
                     </div>
-                </div>
-            </a>
-        @endforeach
+                </a>
+            @endforeach
+        </div>
     </div>
 
-    <div style="border: 2px solid #ccc; padding: 10px; margin-bottom: 10px; float; left;">
-        <a href="{{ route('create') }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px;">質問・相談投稿</a>
-        <a href="{{ route('showCategoryPosts', $categoryIds['university']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: limegreen; color: white;">大学の課題</a>
-        <a href="{{ route('showCategoryPosts', $categoryIds['daily_issues']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: crimson; color: white;">日ごろの悩み</a>
-        <a href="{{ route('showCategoryPosts', $categoryIds['job_advice']) }}" style="display: inline-block; padding: 8px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; margin-bottom: 8px; background-color: deepskyblue; color: white;">就活のアドバイス</a>
-    </div>
-    <div style="width: 8.5cm; height: 9cm; float: right; margin-top: 10px; margin-right: 120px; border: 2px solid #ccc; padding: 10px;">
-        <p>1位</p>
-        <p>2位</p>
-        <p>3位</p>
-    </div>
-
-    <div style="width: 8.5cm; height: 9cm; float: right; margin-top: 370px; margin-right: -320px; border: 2px solid #ccc; padding: 10px;">
-        <p style="font-weight: bold;">人気ワードランキング</p>
-        <ul>
-            <li>キーワード1</li>
-            <li>キーワード2</li>
-            <li>キーワード3</li>
-        </ul>
-    </div>
-
-　　<script>
-            function deletePost(id) {
-                'use strict';
-                
-                if (confirm('削除すると復元できません。\n本当に削除しますか？')) {
-                    document.getElementById(`form_${id}`).submit();
-                }
-            }
-    </script>
-    
     <script>
-    function toggleComments(postId) {
-    var commentsDiv = document.getElementById('comments_' + postId);
-
-    if (commentsDiv.style.display === 'none' || commentsDiv.style.display === '') {
-        commentsDiv.style.display = 'block';
-    } else {
-        commentsDiv.style.display = 'none';
-    }
-    }
+        function toggleLike(postId) {
+            const likeButton = document.querySelector(`.like-button[data-post-id="${postId}"]`);
+            const likeText = document.querySelector(`.like-text[data-post-id="${postId}"]`);
+            likeButton.classList.toggle('active');
+            likeText.classList.toggle('active');
+        }
     </script>
 </x-app-layout>
