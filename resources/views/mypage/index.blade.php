@@ -7,8 +7,9 @@
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; position: relative;">
         <div>
             <!-- CampusConnect -->
-            <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0;">CampusConnect</h1>
-            
+            <a href="{{ route('index') }}" style="text-decoration: none; color: inherit;">
+                <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0; cursor: pointer;">CampusConnect</h1>
+            </a>
             <p style="border-bottom: 2px solid #ccc; display: inline-block; padding-top: 5px; margin-top: 5px; margin-left: 9rem; font-size: 30px;">マイページ</p>
         </div>
 

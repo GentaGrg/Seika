@@ -7,6 +7,7 @@ use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\MyPostsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Support\Facades\Route;
 
 // ログイン
@@ -33,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/myposts', [MyPostsController::class, 'index'])->name('myposts');
     Route::post('/your-upload-action', [PostController::class, 'uploadAction'])->name('your_upload_action');
     Route::get('/category-posts/{categoryId}', [PostController::class, 'showCategoryPosts'])->name('showCategoryPosts');
+    Route::get('/some-route', 'PostController@index');
     Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
     Route::post('/comment/{postId}', 'PostController@commentPost')->name('comment.post');
 

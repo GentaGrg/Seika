@@ -2,6 +2,13 @@
 
 @section('content')
     <!-- ページのコンテンツ -->
+    <x-slot name="CamCon">
+        @if (Route::is('mypage'))
+            mypage
+        @else
+            index
+        @endif
+    </x-slot>
     <div>
         <form action="{{ route('updateUserDetails') }}" method="post">
             @csrf

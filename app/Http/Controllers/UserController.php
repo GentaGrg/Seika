@@ -26,7 +26,7 @@ class UserController extends Controller
     public  function editUserDetails()
     {
         $user = auth()->user();
-        $userPosts = $user->posts()->get();
+        $userPosts = $user->posts;
         
         return view('mypage.editUserDetails', compact('user', 'userPosts'));
     }
