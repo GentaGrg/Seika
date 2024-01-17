@@ -30,4 +30,37 @@ class UserController extends Controller
         
         return view('mypage.editUserDetails', compact('user', 'userPosts'));
     }
+    
+    public function follow(User $user)
+    {
+        $follower = Auth::user();
+
+        // フォローしているか
+        $is_following = $follower->isFollowing($user->id);
+
+        if (!$is_following) {
+            // フォローしていなければフォローする
+            $follower->follow($user->id);
+            return back()->with('success', 'ユーザーをフォローしました。');
+        }
+
+        return back()->with('info', '既にフォローしています。');
+    }
+
+    // フォロー解除
+    public function unfollow(User $user)
+    {
+        $follower = Auth::user();
+
+        // フォローしているか
+        $is_following = $follower->isFollowing($user->id);
+
+        if ($is_following) {
+            // フォローしていればフォローを解除する
+            $follower->unfollow($user->id);
+            return back()->with('success', 'ユーザーのフォローを解除しました。');
+        }
+
+        return back()->with('info', 'フォローしていないユーザーです。');
+    }
 }

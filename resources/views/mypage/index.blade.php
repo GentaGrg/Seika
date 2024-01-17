@@ -1,27 +1,71 @@
-<!-- resources/views/mypage/index.blade.php -->
 <x-app-layout>
-    <x-slot name="CamCon">
-        mypage
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('CamCon') }}
+        </h2>
     </x-slot>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; position: relative;">
-        <div>
-            <!-- CampusConnect -->
-            <a href="{{ route('index') }}" style="text-decoration: none; color: inherit;">
-                <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0; cursor: pointer;">CampusConnect</h1>
-            </a>
-            <p style="border-bottom: 2px solid #ccc; display: inline-block; padding-top: 5px; margin-top: 5px; margin-left: 9rem; font-size: 30px;">マイページ</p>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                @foreach ($all_users as $user)
+                    <div class="card">
+                        <div class="card-header p-3 w-100 d-flex">
+                            <img src="{{ $user->profile_image }}" class="rounded-circle" width="50" height="50">
+                            <div class="ml-2 d-flex flex-column">
+                                <p class="mb-0">{{ $user->name }}</p>
+                                <a href="{{ url('users/' . $user->id) }}" class="text-secondary">{{ $user->screen_name }}</a>
+                            </div>
+                            <!-- フォローされている場合の表示 -->
+                            @if (auth()->user()->isFollowed($user->id))
+                                <div class="px-2">
+                                    <span class="px-1 bg-secondary text-light">フォローされています</span>
+                                </div>
+                            @endif
+                            <div class="d-flex justify-content-end flex-grow-1">
+                                <!-- フォローしている場合の表示 -->
+                                @if (auth()->user()->isFollowing($user->id))
+                                    <form action="{{ route('unfollow', ['id' => $user->id]) }}" method="POST">
+                                        {{ csrf_field() }}
+                                        {{ method_field('DELETE') }}
+                                        <button type="submit" class="btn btn-danger">フォロー解除</button>
+                                    </form>
+                                @else
+                                    <!-- フォローしていない場合の表示 -->
+                                    <form action="{{ route('follow', ['id' => $user->id]) }}" method="POST">
+                                        {{ csrf_field() }}
+                                        <button type="submit" class="btn btn-primary">フォローする</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
-
-    <div style="display: flex; align-items: center; gap: 1rem; margin-left: auto;">
-        <a href="{{ route('index') }}" style="margin-right: 0rem;">ホーム</a>
-    　　<a href="#">通知</a>
-        <div style="margin-right: 1rem;"></div>
-        <p style="margin: 0;">ログインユーザー: {{ $user->name }}</p>
+        <div class="my-4 d-flex justify-content-center">
+            {{ $all_users->links() }}
+        </div>
     </div>
 
-    <div style="position: absolute; bottom: 0; left: 0; right: 0; border-bottom: 2px solid #ccc;"></div>
-    </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 1rem; position: relative;">
+            <div>
+                <!-- CampusConnect -->
+                <a href="{{ route('index') }}" style="text-decoration: none; color: inherit;">
+                    <h1 style="border-bottom: 3px solid #ccc; font-size: 2em; margin: 0; cursor: pointer;">CampusConnect</h1>
+                </a>
+                <p style="border-bottom: 2px solid #ccc; display: inline-block; padding-top: 5px; margin-top: 5px; margin-left: 9rem; font-size: 30px;">マイページ</p>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; margin-left: auto;">
+                <a href="{{ route('index') }}" style="margin-right: 0rem;">ホーム</a>
+                <a href="#">通知</a>
+                <div style="margin-right: 1rem;"></div>
+                <p style="margin: 0;">ログインユーザー: {{ auth()->user()->name }}</p>
+            </div>
+
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; border-bottom: 2px solid #ccc;"></div>
+        </div>
 
     <div style="display: flex; margin-top: 20px; margin-bottom: 20px;">
     
@@ -111,5 +155,4 @@
         // ここに他の処理を追加することができます
     });
 </script>
-    </div>
 </x-app-layout>

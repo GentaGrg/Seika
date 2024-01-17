@@ -79,14 +79,14 @@
             width: 150px;
             padding: 10px;
             background-color: #f0f0f0;
-            border-right: 1px solid #ccc;
+            border-right: none;
             height: 100vh;
             overflow-y: auto;
         }
 
         .timeline {
-            border-right: 1px solid #ccc;
-            overflow-y: hidden;
+            /*border-right: 1px solid #ccc;*/
+            overflow-y: auto;
             max-height: 100vh;  
         }
 

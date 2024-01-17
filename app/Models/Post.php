@@ -8,15 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
-    
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'title',
         'body',
-        'category_id'
-        ];
-    
+        'category_id',
+    ];
+
     public function getPaginateByLimit(int $limit_count = 5)
     {
         return $this::with('category')->orderBy('updated_at', 'DESC')->paginate($limit_count);
@@ -26,4 +25,4 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
-} 
+}
