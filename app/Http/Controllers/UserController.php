@@ -8,6 +8,12 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $posts = Post::with('user')->get();
+        return view('posts.index', compact('posts'));
+    }
+    
     public function update(Request $request)
     {
         // フォームからのデータを取得
@@ -23,11 +29,14 @@ class UserController extends Controller
         return redirect()->route('profile')->with('success', 'ユーザー情報が更新されました。');
     }
     
-    public  function editUserDetails()
+    public function editUserDetails()
     {
         $user = auth()->user();
         $userPosts = $user->posts;
-        
+    
+        // Load the 'user' relationship for each post
+        $userPosts->load('user');
+    
         return view('mypage.editUserDetails', compact('user', 'userPosts'));
     }
     

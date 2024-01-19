@@ -55,34 +55,19 @@ class User extends Authenticatable
         return !empty($this->name) && !empty($this->email) && !empty($this->password);
     }
 
-    // フォロー関連のリレーション
+    public function following()
+    {
+        return $this->belongsToMany(self::class, 'followers', 'following_id', 'followed_id');
+    }
+    
     public function followers()
     {
         return $this->belongsToMany(self::class, 'followers', 'followed_id', 'following_id');
     }
-
-    public function follows()
+    
+    public function isFollowing(User $user)
     {
-        return $this->belongsToMany(self::class, 'followers', 'following_id', 'followed_id');
-    }
-
-    public function follow(User $user)
-    {
-        // 自分自身をフォローしようとしていないか確認
-        if ($this->id == $user->id) {
-            return back()->with('error', '自分自身をフォローすることはできません。');
-        }
-
-        // フォローしているか
-        $is_following = $this->isFollowing($user->id);
-
-        if (!$is_following) {
-            // フォローしていなければフォローする
-            $this->follows()->attach($user->id);
-            return back()->with('success', 'ユーザーをフォローしました。');
-        }
-
-        return back()->with('info', '既にフォローしています。');
+        return $this->following()->where('followed_id', $user->id)->exists();
     }
 
     // フォロー解除
@@ -93,7 +78,7 @@ class User extends Authenticatable
 
         if ($is_following) {
             // フォローしていればフォローを解除する
-            $this->follows()->detach($user->id);
+            $this->following()->detach($user->id);
             return back()->with('success', 'ユーザーのフォローを解除しました。');
         }
 
