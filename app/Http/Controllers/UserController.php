@@ -8,6 +8,12 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $posts = Post::with('user')->get();
+        return view('posts.index', compact('posts'));
+    }
+    
     public function update(Request $request)
     {
         // フォームからのデータを取得
@@ -23,11 +29,47 @@ class UserController extends Controller
         return redirect()->route('profile')->with('success', 'ユーザー情報が更新されました。');
     }
     
-    public  function editUserDetails()
+    public function editUserDetails()
     {
         $user = auth()->user();
         $userPosts = $user->posts;
-        
+    
+        // Load the 'user' relationship for each post
+        $userPosts->load('user');
+    
         return view('mypage.editUserDetails', compact('user', 'userPosts'));
+    }
+    
+    public function follow(User $user)
+    {
+        $follower = Auth::user();
+
+        // フォローしているか
+        $is_following = $follower->isFollowing($user->id);
+
+        if (!$is_following) {
+            // フォローしていなければフォローする
+            $follower->follow($user->id);
+            return back()->with('success', 'ユーザーをフォローしました。');
+        }
+
+        return back()->with('info', '既にフォローしています。');
+    }
+
+    // フォロー解除
+    public function unfollow(User $user)
+    {
+        $follower = Auth::user();
+
+        // フォローしているか
+        $is_following = $follower->isFollowing($user->id);
+
+        if ($is_following) {
+            // フォローしていればフォローを解除する
+            $follower->unfollow($user->id);
+            return back()->with('success', 'ユーザーのフォローを解除しました。');
+        }
+
+        return back()->with('info', 'フォローしていないユーザーです。');
     }
 }

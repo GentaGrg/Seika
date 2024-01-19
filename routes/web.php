@@ -8,6 +8,7 @@ use App\Http\Controllers\MyPostsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 // ログイン
@@ -37,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/some-route', 'PostController@index');
     Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
     Route::post('/comment/{postId}', 'PostController@commentPost')->name('comment.post');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
@@ -48,10 +50,13 @@ Route::get('/categories/{category}', [CategoryController::class, 'index'])->midd
 Route::middleware('auth')->group(function () {
     // ProfileControllerのプロフィール編集アクション
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    // routes/web.php
+    Route::get('/profile/{user}', 'ProfileController@show')->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', 'ProfileController@destroy')->name('profile.destroy');
     Route::put('/updateUserDetails', [UserController::class, 'updateUserDetails'])->name('updateUserDetails');
     Route::get('/editUserDetails', [UserController::class, 'editUserDetails'])->name('editUserDetails');
+    Route::post('/user/{user}/follow', [FollowController::class, 'toggleFollow'])->name('user.follow');
 });
 
 require __DIR__.'/auth.php';

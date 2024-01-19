@@ -20,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'screen_name',
+        'profile_image',
     ];
 
     /**
@@ -51,5 +53,35 @@ class User extends Authenticatable
     public function detailsAreRegistered()
     {
         return !empty($this->name) && !empty($this->email) && !empty($this->password);
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(self::class, 'followers', 'following_id', 'followed_id');
+    }
+    
+    public function followers()
+    {
+        return $this->belongsToMany(self::class, 'followers', 'followed_id', 'following_id');
+    }
+    
+    public function isFollowing(User $user)
+    {
+        return $this->following()->where('followed_id', $user->id)->exists();
+    }
+
+    // フォロー解除
+    public function unfollow(User $user)
+    {
+        // フォローしているか
+        $is_following = $this->isFollowing($user->id);
+
+        if ($is_following) {
+            // フォローしていればフォローを解除する
+            $this->following()->detach($user->id);
+            return back()->with('success', 'ユーザーのフォローを解除しました。');
+        }
+
+        return back()->with('info', 'フォローしていないユーザーです。');
     }
 }
