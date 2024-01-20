@@ -123,21 +123,20 @@
                 @foreach ($posts->reverse() as $post)
                     <a href="{{ route('show', $post->id) }}" style="text-decoration: none; color: inherit;">
                         <div class='post'>
-                            @if (Auth::check() && $post->user)
+                            @if (Auth::check())
                                 <p class='user-time-info'>
                                     {{ $post->user ? $post->user->name : 'No User' }},
                                     {{ $post->created_at->diffForHumans() }}
                                     @if ($post->user)
-                                        <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if($post->user->isFollowed()) active @endif" data-user-id="{{ $post->user->id }}">
-                                            @if($post->user->isFollowed())
+                                        <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if(auth()->user()->isFollowed($post->user->id)) active @endif" data-user-id="{{ $post->user->id }}">
+                                            @if(auth()->user()->isFollowed($post->user->id))
                                                 フォロー中
                                             @else
                                                 フォローする
                                             @endif
                                         </button>
                                     @endif
-                                </p>
-                            @endif
+                                @endif
                             <p class='category'>カテゴリー: {{ $post->category->name }}</p>
                             <h2 class='title'>{{ $post->title }}</h2>
                             <p class='body'>{{ $post->body }}</p>
