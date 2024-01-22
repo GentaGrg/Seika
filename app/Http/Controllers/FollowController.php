@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;    
 
 class FollowController extends Controller
 {
-   public function toggleFollow(User $userToFollow)
-{
-    // フォローのトグル処理
-    auth()->user()->toggleFollow($userToFollow);
+    public function store($userId)
+    {
+        $userToFollow = User::find($userId);
 
-    // ユーザーネームの更新などが必要な場合はここで行う
+        if (!$userToFollow) {
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        }
 
-    return back(); // 適切なリダイレクトに変更
-}
+        $follower = auth()->user();
+
+        if ($follower->isFollowing($userToFollow)) {
+            $follower->unfollow($userToFollow);
+            return response()->json(['success' => true, 'message' => 'Unfollowed successfully']);
+        } else {
+            $follower->follow($userToFollow);
+            return response()->json(['success' => true, 'message' => 'Followed successfully']);
+        }
+    }
 }

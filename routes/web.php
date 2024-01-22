@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/your-upload-action', [PostController::class, 'uploadAction'])->name('your_upload_action');
     Route::get('/category-posts/{categoryId}', [PostController::class, 'showCategoryPosts'])->name('showCategoryPosts');
     Route::get('/some-route', 'PostController@index');
+    Route::post('/follow/{userId}', [FollowController::class, 'store']);
     Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
     Route::post('/comment/{postId}', 'PostController@commentPost')->name('comment.post');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
