@@ -25,12 +25,39 @@
 
     <div style="display: flex; margin-top: 20px; margin-bottom: 20px;">
     
-    <div style="border-right: 3px solid #ccc; height: 80vh; margin-right: 1rem; padding-right: 1rem; margin-left: 1rem;">
-        <p style="margin-bottom: 20px;">過去の投稿</p>
-        <p style="margin-bottom: 20px;">いいね下投稿</p>
-        <p style="margin-bottom: 20px;">コメントした投稿</p>
-        <p style="margin-bottom: 20px;">非表示した投稿</p>
+    <div style="border-right: 3px solid #ccc; height: 80vh; margin-right: 1rem; padding-right: 1rem; margin-left: 1rem; display: flex; flex-direction: column; gap: 20px;">
+        <div>
+            <button type="button" onclick="toggleSection('past-posts')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">過去の投稿</button>
+        </div>
+        <div>
+            <button type="button" onclick="toggleSection('liked-posts')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">いいね下投稿</button>
+        </div>
+        <div>
+            <button type="button" onclick="toggleSection('commented-posts')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">コメントした投稿</button>
+        </div>
+        <div>
+            <button type="button" onclick="toggleSection('hidden-posts')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">非表示した投稿</button>
+        </div>
+        <div>
+            <button type="button" onclick="toggleSection('saved-for-later')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">後で答える</button>
+        </div>
+    
+        <script>
+            function toggleSection(sectionId) {
+                // すべてのセクションを非表示にする
+                document.getElementById('past-posts-section').style.display = 'none';
+                document.getElementById('liked-posts-section').style.display = 'none';
+                document.getElementById('commented-posts-section').style.display = 'none';
+                document.getElementById('hidden-posts-section').style.display = 'none';
+                document.getElementById('saved-for-later-section').style.display = 'none';
+    
+                // 選択されたセクションを表示する
+                document.getElementById(sectionId + '-section').style.display = 'block';
+            }
+        </script>
     </div>
+
+
     
 　　<div style="position: relative;">
 

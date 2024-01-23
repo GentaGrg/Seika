@@ -90,4 +90,14 @@ class User extends Authenticatable
 
         return back()->with('info', 'フォローしていないユーザーです。');
     }
+    
+    public function savedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'saved_posts', 'user_id', 'post_id')->withTimestamps();
+    }
+    
+    public function hasSavedPost($postId): bool
+    {
+        return $this->savedPosts()->where('post_id', $postId)->exists();
+    }
 }
