@@ -110,6 +110,11 @@
             margin: 0;
             padding: 10px;
         }
+        
+        .post-divider {
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
     </style>
 
     @php
@@ -121,7 +126,9 @@
     @endphp
 
     <div class="main" style="display:flex; justify-content: center; max-width: 1200px; margin: 0 auto;">
+        <!-- ナビゲーションメニュー -->
         <div class="nav-menu" style="margin-right: 100px; margin-bottom: 50px">
+            <!-- ナビゲーションメニューアイテム -->
             <p><a href="{{ route('mypage') }}" style="font-size: 1.5em; margin-bottom: 10px;">マイページ</a></p>
             <p><a href="{{ route('create') }}" style="font-size: 1.2em; margin-bottom: 10px;">質問・相談投稿</a></p>
             <p><a href="{{ route('showCategoryPosts', $categoryIds['university']) }}" style="font-size: 1.2em; background-color: limegreen; color: white; margin-bottom: 10px;">大学の課題</a></p>
@@ -129,67 +136,82 @@
             <p><a href="{{ route('showCategoryPosts', $categoryIds['job_advice']) }}" style="font-size: 1.2em; background-color: deepskyblue; color: white; margin-bottom: 10px;">就活のアドバイス</a></p>
         </div>
 
+        <!-- タイムライン -->
         <div class="timeline" style="flex-grow: 1; max-width: 800px;">
-        <h1 class="timeline-heading">CampusConnect</h1>
+            <h1 class="timeline-heading">CampusConnect</h1>
 
-        <div class="container">
-        @foreach ($posts->reverse() as $post)
-            <div class='post'>
-                @if (Auth::check())
-                    <p class='user-time-info'>
-                        @if ($post->user)
-                            {{ $post->user->name }},
-                        @else
-                            Anonymous,
-                        @endif
-                        {{ $post->created_at->diffForHumans() }}
-                        @if ($post->user && $post->user->id !== auth()->user()->id)
-                            <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if(auth()->user()->isFollowed($post->user->id)) active @endif" data-user-id="{{ $post->user->id }}">
-                                @if(auth()->user()->isFollowed($post->user->id))
-                                    フォロー中
-                                @else
-                                    フォローする
-                                @endif
-                            </button>
-                        @endif
-                    </p>
-                @endif
-                <p class='category'>カテゴリー: {{ $post->category->name }}</p>
-                <h2 class='title'>
-                    <a href="{{ route('post.show', $post->id) }}" class="post-link">{{ $post->title }}</a>
-                </h2>
-                <p class='body'>{{ $post->body }}</p>
-    
-                <div class="post-actions">
-                    <div class="post-actions-left">
-                        <button type="button" onclick="toggleLike(event, {{ $post->id }})" class="like-button @if($post->liked) active @endif" data-post-id="{{ $post->id }}">
-                            &#x1F44D;
-                        </button>
-                        <span class="like-text @if($post->liked) active @endif">{{ $post->likes_count }}</span>
-                    </div>
-                    <button type="button" onclick="toggleComments({{ $post->id }})">コメント</button>
-                    <button type="button" onclick="saveForLater({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}">
-                        @if(auth()->user()->hasSavedPost($post->id))
-                            後で答える
-                        @else
-                            後で答える
-                        @endif
-                    </button>
-                </div>
-    
-                <div id="comments-container-{{ $post->id }}" class="comments" data-post-id="{{ $post->id }}" style="display: none;">
-                    @foreach ($post->comments as $comment)
-                        <p>{{ $comment->body }}</p>
-                    @endforeach
-                    <form onsubmit="submitComment(event, {{ $post->id }})">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <textarea name="body" rows="3" placeholder="コメントを入力してください"></textarea>
-                        <button type="submit">コメントする</button>
-                    </form>
-                </div>
+            <div class="container">
+                @foreach ($posts->reverse() as $post)
+                    <div class='post'>
+    <!-- 投稿ユーザー情報 -->
+    @if (Auth::check())
+        <p class='user-time-info'>
+            @if ($post->user)
+                {{ $post->user->name }},
+            @else
+                Anonymous,
+            @endif
+            {{ $post->created_at->diffForHumans() }}
+            @if ($post->user && $post->user->id !== auth()->user()->id)
+                <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if(auth()->user()->isFollowed($post->user->id)) active @endif" data-user-id="{{ $post->user->id }}">
+                    @if(auth()->user()->isFollowed($post->user->id))
+                        フォロー中
+                    @else
+                        フォローする
+                    @endif
+                </button>
+            @endif
+        </p>
+    @endif
+    <!-- カテゴリー、タイトル、本文 -->
+    <p class='category'>カテゴリー: {{ $post->category->name }}</p>
+    <a href="{{ route('post.show', $post->id) }}" class="post-link">
+        <h2 class='title'>
+            {{ $post->title }}
+        </h2>
+    </a>
+    <div class="post-content">
+        <p class='body'>{{ $post->body }}</p>
+
+        <!-- 細い線 -->
+        <div class="post-divider"></div>
+
+        <!-- 投稿のアクション -->
+        <div class="post-actions">
+            <div class="post-actions-left">
+                <!-- いいねボタン -->
+                <button type="button" onclick="toggleLike(event, {{ $post->id }})" class="like-button @if($post->liked) active @endif" data-post-id="{{ $post->id }}">
+                    &#x1F44D;
+                </button>
+                <span class="like-text @if($post->liked) active @endif">{{ $post->likes_count }}</span>
             </div>
+            <!-- コメントボタン -->
+            <button type="button" onclick="toggleComments({{ $post->id }})">コメント</button>
+            <!-- 後で答えるボタン -->
+            <button type="button" onclick="saveForLater({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}">
+                後で答える
+            </button>
+        </div>
+    </div>
+
+    <!-- コメントエリア -->
+    <div id="comments-container-{{ $post->id }}" class="comments" data-post-id="{{ $post->id }}" style="display: none;">
+        <!-- コメント一覧 -->
+        @foreach ($post->comments as $comment)
+            <p>{{ $comment->body }}</p>
         @endforeach
+        <!-- コメントフォーム -->
+        <form onsubmit="submitComment(event, {{ $post->id }})">
+            @csrf
+            <input type="hidden" name="post_id" value="{{ $post->id }}">
+            <textarea name="body" rows="3" placeholder="コメントを入力してください"></textarea>
+            <button type="submit">コメントする</button>
+        </form>
+    </div>
+</div>
+                @endforeach
+            </div>
+        </div>
     </div>
 
 
@@ -210,7 +232,7 @@
         .catch(error => {
             console.error('Error:', error);
         });
-}
+    }
     
     function toggleFollow(event, userId) {
         console.log('toggleFollow function called with userId:', userId);
@@ -247,29 +269,25 @@
     }
 
     function submitComment(event, postId) {
-        // コメントの提出処理はここで処理します
-        event.preventDefault();
-        console.log('Comment submitted for post ID:', postId);
-    }
-    
-    function saveForLater(postId) {
-        axios.post(`/save/${postId}`)
-            .then(response => {
-                if (response.data.success) {
-                    const saveButton = document.querySelector(`.save-button[data-post-id="${postId}"]`);
-                    saveButton.classList.toggle('active');
-                    if (saveButton.classList.contains('active')) {
-                        saveButton.textContent = '保存済み';
-                    } else {
-                        saveButton.textContent = '保存';
-                    }
-                } else {
-                    console.error(response.data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
+    // コメントの提出処理はここで処理します
+    event.preventDefault();
+    console.log('Comment submitted for post ID:', postId);
+
+    const commentTextarea = document.querySelector(`#comments-container-${postId} textarea`);
+    const commentBody = commentTextarea.value;
+
+    axios.post(`/comment/${postId}`, {
+        body: commentBody
+    })
+    .then(response => {
+        // サーバーからの応答に応じて必要な処理を追加できます
+        console.log('Comment submitted successfully:', response.data);
+
+        // 必要に応じてコメント一覧を更新するなどの処理を追加
+    })
+    .catch(error => {
+        console.error('Error submitting comment:', error);
+    });
+}
 </script>
 </x-app-layout>
