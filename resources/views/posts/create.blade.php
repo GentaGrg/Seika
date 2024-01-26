@@ -39,7 +39,7 @@
                 <textarea name="post[body]" id="body" rows="5" required style="width: 50%; height: 400px; font-size: 16px; margin-bottom: 10px;"></textarea>
 
                 <!-- ファイル添付 -->
-                <form id="postForm" method="POST" action="{{ route('your_upload_action') }}" enctype="multipart/form-data">
+                <form id="uploadForm" method="POST" action="{{ route('your_upload_action') }}" enctype="multipart/form-data">
                     <!-- 他のフォーム要素 -->
 
                     <!-- 写真を添付する -->
@@ -51,6 +51,12 @@
                     <!-- ハッシュタグ入力欄 -->
                     <label for="hashtagInput" style="display: block; font-size: 16px; margin-top: 10px;">ハッシュタグを入力</label>
                     <input type="text" id="hashtagInput" placeholder="ハッシュタグを入力" style="font-size: 16px; margin-top: 5px;">
+
+                    <!-- 名前を表示するかどうかのチェックボックス -->
+                    <div>
+                        <label for="displayUserName" style="display: block; font-size: 16px; margin-top: 10px;">名前を表示する</label>
+                        <input type="checkbox" id="displayUserName" name="post[display_user_name]" checked style="font-size: 16px; margin-top: 5px;">
+                    </div>
 
                     <!-- 送信ボタン -->
                     <div style="margin: 30px auto; text-align: center;">
@@ -109,6 +115,7 @@
                     // カテゴリー選択時に表示を更新
                     document.getElementById('category').addEventListener('change', function() {
                         var selectedCategory = document.getElementById('category').value;
+                        // Assuming you have an element with ID 'selectedCategory', update its text
                         document.getElementById('selectedCategory').innerText = selectedCategory;
                     });
                 </script>
@@ -122,4 +129,5 @@
                 <!-- ユーザーがログインしていない場合に表示されるコンテンツ -->
                 <p>ログインしてください。</p>
             @endif
-        </x-app-layout>
+        </form>
+    </x-app-layout>

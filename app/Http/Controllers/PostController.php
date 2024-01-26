@@ -44,14 +44,43 @@ class PostController extends Controller
         return redirect('/');
     }
     
-    public function store(Request $request, Post $post)
+    public function store(PostRequest $request, Post $post)
     {
-     $input= $request['post'];
-     
-     $post->fill($input)->save();
-     return redirect()->route('myposts');
-    }
+        try {
+            // Check if the user is authenticated
+            if (!auth()->check()) {
+                // Handle the case where the user is not authenticated
+                return redirect()->route('login')->with('error', 'Please log in to create a post.');
+            }
     
+            // Validate the request using the PostRequest
+            $validatedData = $request->validated();
+    
+            // Add user_id to the input array
+            $input = $request->input('post');
+            $input['user_id'] = auth()->user()->id;
+    
+            // Check if the display_user_name checkbox is checked
+            $displayUserName = $request->input('post.display_user_name', true);
+    
+            // Add display_user_name to the input array
+            $input['display_user_name'] = $displayUserName;
+    
+            // Save the post
+            $post->fill($input)->save();
+    
+            // Redirect to the previous page or any specific page after saving the post
+            return redirect()->route('myposts'); // Change 'myposts' to the desired route name
+    
+        } catch (\Exception $e) {
+            // Log the exception for debugging purposes
+            \Log::error('Error storing post: ' . $e->getMessage());
+    
+            // Redirect back with an error message
+            return redirect()->back()->with('error', 'An error occurred while storing the post.');
+        }
+    }
+
     public function update(PostRequest $request, Post $post)
     {
         $input_post = $request['post'];
