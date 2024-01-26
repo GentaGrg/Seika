@@ -144,25 +144,26 @@
                 @foreach ($posts->reverse() as $post)
                     <div class='post'>
     <!-- 投稿ユーザー情報 -->
-    @if (Auth::check())
-        <p class='user-time-info'>
             @if ($post->user)
+            <p class='user-time-info'>
                 {{ $post->user->name }},
-            @else
+                {{ $post->created_at->diffForHumans() }}
+                @if ($post->user && $post->user->id !== auth()->user()->id && $post->display_user_name)
+                    <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if(auth()->user()->isFollowed($post->user->id)) active @endif" data-user-id="{{ $post->user->id }}">
+                        @if(auth()->user()->isFollowed($post->user->id))
+                            フォロー中
+                        @else
+                            フォローする
+                        @endif
+                    </button>
+                @endif
+            </p>
+        @else
+            <p class='user-time-info'>
                 Anonymous,
-            @endif
-            {{ $post->created_at->diffForHumans() }}
-            @if ($post->user && $post->user->id !== auth()->user()->id)
-                <button type="button" onclick="toggleFollow(event, {{ $post->user->id }})" class="follow-button @if(auth()->user()->isFollowed($post->user->id)) active @endif" data-user-id="{{ $post->user->id }}">
-                    @if(auth()->user()->isFollowed($post->user->id))
-                        フォロー中
-                    @else
-                        フォローする
-                    @endif
-                </button>
-            @endif
-        </p>
-    @endif
+                {{ $post->created_at->diffForHumans() }}
+            </p>
+        @endif
     <!-- カテゴリー、タイトル、本文 -->
     <p class='category'>カテゴリー: {{ $post->category->name }}</p>
     <a href="{{ route('post.show', $post->id) }}" class="post-link">
@@ -194,25 +195,24 @@
         </div>
     </div>
 
-    <!-- コメントエリア -->
-    <div id="comments-container-{{ $post->id }}" class="comments" data-post-id="{{ $post->id }}" style="display: none;">
-        <!-- コメント一覧 -->
-        @foreach ($post->comments as $comment)
-            <p>{{ $comment->body }}</p>
+    <div class="comments" id="comments-container-{{ $post->id }}" data-post-id="{{ $post->id }}" style="display: none;">
+                    <!-- コメント一覧 -->
+                    @foreach ($post->comments as $comment)
+                        <p>{{ $comment->body }}</p>
+                    @endforeach
+
+                    <!-- コメントフォーム -->
+                    <form onsubmit="submitComment(event, {{ $post->id }})">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+                        <textarea name="body" rows="3" placeholder="コメントを入力してください"></textarea>
+                        <button type="submit">コメントする</button>
+                    </form>
+                </div>
+            </div>
         @endforeach
-        <!-- コメントフォーム -->
-        <form onsubmit="submitComment(event, {{ $post->id }})">
-            @csrf
-            <input type="hidden" name="post_id" value="{{ $post->id }}">
-            <textarea name="body" rows="3" placeholder="コメントを入力してください"></textarea>
-            <button type="submit">コメントする</button>
-        </form>
     </div>
 </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
 
 
     <script>
