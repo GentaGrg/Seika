@@ -32,12 +32,7 @@ class UserController extends Controller
     public function editUserDetails()
     {
         $user = auth()->user();
-        $userPosts = $user->posts;
-    
-        // Load the 'user' relationship for each post
-        $userPosts->load('user');
-    
-        return view('mypage.editUserDetails', compact('user', 'userPosts'));
+        return view('mypage.editUserDetails', compact('user'));
     }
     
     public function follow(User $user)
