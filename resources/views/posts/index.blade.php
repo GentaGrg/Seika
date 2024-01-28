@@ -205,7 +205,8 @@
                     <form onsubmit="submitComment(event, {{ $post->id }})">
                         @csrf
                         <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <textarea name="body" rows="3" placeholder="コメントを入力してください"></textarea>
+                        <!-- textarea要素のIDが不足していました -->
+                        <textarea id="comment-body-{{ $post->id }}" name="body" rows="3" placeholder="コメントを入力してください"></textarea>
                         <button type="submit">コメントする</button>
                     </form>
                 </div>
@@ -273,7 +274,8 @@
     event.preventDefault();
     console.log('Comment submitted for post ID:', postId);
 
-    const commentTextarea = document.querySelector(`#comments-container-${postId} textarea`);
+    // textareaのIDを修正
+    const commentTextarea = document.querySelector(`comment-body-${postId}`);
     const commentBody = commentTextarea.value;
 
     axios.post(`/comment/${postId}`, {

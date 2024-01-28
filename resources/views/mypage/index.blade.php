@@ -39,7 +39,7 @@
             <button type="button" onclick="toggleSection('hidden-posts')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">非表示した投稿</button>
         </div>
         <div>
-            <button type="button" onclick="toggleSection('saved-for-later')" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">後で答える</button>
+            <button type="button" onclick="window.location.href='{{ route('answer-later.show', ['post' => $latestPost->id]) }}'" style="border: 1px solid #ccc; padding: 10px; border-radius: 10px;">後で解答</button>
         </div>
     
         <script>
@@ -157,6 +157,17 @@
     <script>
     function openModal(modalId) {
         document.getElementById(modalId).style.display = 'block';
+    }
+    
+    function redirectToAnswerLater() {
+        // Check if the latestPost is defined
+        @if(isset($latestPost))
+            // Get the post ID
+            var postId = @json($latestPost->id);
+            
+            // Redirect to the answer-later route
+            window.location.href = '/mypage/answer-later/' + postId;
+        @endif
     }
     </script>
     

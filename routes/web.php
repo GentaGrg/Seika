@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AnswerLaterController;
 use Illuminate\Support\Facades\Route;
 
 // ログイン
@@ -40,9 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/some-route', 'PostController@index');
     Route::post('/follow/{userId}', [FollowController::class, 'store']);
     Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
-    Route::post('/comment/{postId}', 'PostController@commentPost')->name('comment.post');
-    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
-
+    
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
 });
@@ -60,6 +59,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/updateUserDetails', [UserController::class, 'updateUserDetails'])->name('updateUserDetails');
     Route::get('/editUserDetails', [UserController::class, 'editUserDetails'])->name('editUserDetails');
     Route::post('/user/{user}/follow', [FollowController::class, 'toggleFollow'])->name('user.follow');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::get('/mypage/answer-later/{post}', [AnswerLaterController::class, 'show'])->name('answer-later.show');
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comment.store');
 });
 
 require __DIR__.'/auth.php';

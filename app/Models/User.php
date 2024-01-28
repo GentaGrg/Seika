@@ -50,7 +50,6 @@ class User extends Authenticatable
         return $this->hasMany(Category::class);
     }
 
-    // 詳細情報が登録されているかどうかを確認するメソッド
     public function detailsAreRegistered()
     {
         return !empty($this->name) && !empty($this->email) && !empty($this->password);
