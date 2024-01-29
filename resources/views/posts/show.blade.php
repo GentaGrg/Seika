@@ -1,5 +1,3 @@
-<!-- 任意のBladeファイル -->
-
 <x-app-layout>
     <x-slot name="header">
         <a href="{{ route('index') }}" class="back-link">&#8592;</a>
@@ -21,28 +19,76 @@
             position: relative;
         }
 
-        .user-info {
+        .twitter-style-header .user-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .user-info .user-name {
+        .twitter-style-header .user-info .user-name {
             margin-right: 10px;
             color: black;
         }
 
-        .edit-svg-container {
+        .twitter-style-header .edit-svg {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            fill: black;
+        }
+
+        .twitter-style-header .edit-svg:hover {
+            fill: #157BBB;
+        }
+
+        .twitter-style-header .edit-svg-container {
             position: absolute;
             top: 50%;
             right: 10px;
             transform: translateY(-50%);
         }
 
+        .twitter-style-header .actions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .twitter-style-header .actions button {
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .twitter-style-body {
+            padding: 10px 0;
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .user-info .user-name {
+            margin-right: 10px;
+            color: black;
+        }
+    
+        .edit-svg-container {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+    
         .edit-svg:hover {
             fill: #157BBB;
         }
-
+    
         .actions {
             display: none;
             position: absolute;
@@ -52,12 +98,42 @@
             gap: 10px;
             animation: slideIn 0.3s ease-out;
         }
-
-        .twitter-style-body {
-            padding: 10px 0;
+    
+        /* 追加されたいいね、コメントのスタイル */
+        .like-comment-save-section {
+            display: flex;
+            gap: 10px;
+        }
+    
+        .like-button {
+            background-color: white;
+            border: 1px solid #1877f2;
+            color: #1877f2;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+    
+        .like-button.active {
+            background-color: #1877f2;
+            color: white;
         }
 
-        /* 追加されたいいね、コメントのスタイル */
+        .comment-button.active {
+            background-color: #1877f2;
+            color: white;
+        }
+    
+        .comment-button {
+            background-color: white;
+            border: 1px solid #1877f2;
+            color: #1877f2;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
         .like-comment-save-section {
             display: flex;
             gap: 10px;
@@ -82,13 +158,12 @@
         }
 
         .comments-container {
-            display: none;
             margin-top: 10px;
             padding: 10px;
             border: 1px solid #eee;
             border-radius: 5px;
         }
-
+    
         .comments-container textarea {
             width: 100%;
             margin-top: 10px;
@@ -97,7 +172,13 @@
             border-radius: 4px;
             resize: vertical;
         }
-
+    
+        .comments-list {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+    
         .comment {
             margin-top: 10px;
             padding: 10px;
@@ -174,6 +255,16 @@
             border-radius: 10px;
         }
 
+        .actions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            flex-direction: column;
+            gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -223,7 +314,7 @@
                                 <button onclick="editAction()">編集</button>
                             </div>
                             <div class="text-wrapper">
-                                <button onclick="answerLaterAction()">後で解答</button>
+                                <button onclick="answerLaterAction({{ $post->id }})">後で解答</button>
                             </div>
                         </div>
                         <svg viewBox="0 0 24 24" aria-hidden="true" class="edit-svg" onclick="toggleActions()">
@@ -249,12 +340,13 @@
         </div>
         <div class="twitter-style-footer">
             <div class="like-comment-save-section">
-                <button type="button" class="like-button" onclick="toggleLike(event, {{ $post->id }})">いいね</button>
+                <button type="button" class="like-button @if($post->isLikedBy(auth()->user())) active @endif" onclick="toggleLike(event, {{ $post->id }})">いいね</button>
                 <button type="button" class="comment-button" onclick="toggleComments({{ $post->id }})">コメント</button>
-                <button type="button" onclick="saveForLater({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}">
+                <button type="button" onclick="answerLaterAction({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}">
                     後で答える
                 </button>
             </div>
+            <!-- コメントセクション -->
             <div id="comments-container-{{ $post->id }}" class="comments-container">
                 <form action="{{ route('comment.store', ['post' => $post->id]) }}" method="post">
                     @csrf
@@ -262,6 +354,13 @@
                     <button type="submit">コメントする</button>
                 </form>
             </div>
+            <div class="comments-list">
+                @foreach($post->comments as $comment)
+                    <div class="comment">
+                    </div>
+                @endforeach
+            </div>
+        </div>
             @foreach($post->comments as $comment)
                 <div class="comment">
                     <div class="user-info">
@@ -322,15 +421,31 @@
                 console.error('エラー:', error);
             });
         }
+        
+        function toggleActions() {
+            const actionsContainer = document.querySelector('.actions');
+            actionsContainer.style.display = (actionsContainer.style.display === 'none') ? 'flex' : 'none';
+        }
 
         function editAction() {
             // 編集アクションの実行
             window.location.href = "{{ route('edit', ['post' => $post->id]) }}";
         }
 
-        function answerLaterAction() {
+        function answerLaterAction(postId) {
             // 後で解答アクションの実行
-            alert("Answer later action");
+            axios.post(`/mypage/answer-later/${postId}`)
+                .then(response => {
+                    if (response.data.success) {
+                        // メッセージを表示
+                        alert('後で解答に保存しました！');
+                        // マイページにリダイレクト
+                        window.location.href = "{{ route('mypage') }}";
+                    }
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                });
         }
-</script>
+    </script>
 </x-app-layout>

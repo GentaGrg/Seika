@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/follow/{userId}', [FollowController::class, 'store']);
     Route::post('/like/{postId}', 'PostController@likePost')->name('like.post');
     
+
     // MyPageControllerのマイページ表示アクション
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
 });
@@ -60,9 +61,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/editUserDetails', [UserController::class, 'editUserDetails'])->name('editUserDetails');
     Route::post('/user/{user}/follow', [FollowController::class, 'toggleFollow'])->name('user.follow');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::get('/mypage/answer-later/{post}', [AnswerLaterController::class, 'show'])->name('answer-later.show');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comment.store');
+    Route::post('/save-for-later/{post}', 'PostController@saveForLater')->name('saveForLater');
 });
 
 require __DIR__.'/auth.php';
