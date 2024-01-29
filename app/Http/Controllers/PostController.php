@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Category;
 use App\Models\Like;
 use App\Models\Comment;
@@ -66,6 +67,10 @@ class PostController extends Controller
             \Log::error('Error storing post: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while storing the post.');
         }
+        
+        auth()->user()->decreasePoints(1);
+
+        return redirect()->route('posts.index');
     }
 
     public function update(PostRequest $request, Post $post)
@@ -111,5 +116,15 @@ class PostController extends Controller
         ]);
     
         return redirect()->back();
+    }
+    
+    public function saveForLater(Post $post)
+    {
+        // ユーザーモデルと認証されたユーザーが存在することを前提としています
+        auth()->user()->addToMyPageAnswer($post);
+    
+        // 必要であればここで追加のロジックを追加できます
+    
+        return response()->json(['success' => true]);
     }
 }
