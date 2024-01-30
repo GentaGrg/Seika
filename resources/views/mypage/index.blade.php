@@ -63,10 +63,10 @@
 
     <p style="margin-bottom: 10px;">ポイント残高: {{ $user->point->amount ?? 0 }}</p>
     <p style="margin-bottom: 10px;">ご利用可能ポイント: {{ $user->point->available_amount ?? 0 }}</p>
-
     <button type="submit" style="margin-top: 10px;">
-    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">ポイント消費履歴</span>
-   </button>
+        <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">ポイント消費履歴</span>
+    </button>
+    </button>
     
     <div style="border-top: 2px solid #ccc; margin-top: 20px;"></div>
 

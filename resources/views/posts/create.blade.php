@@ -58,30 +58,57 @@
                         <input type="checkbox" id="displayUserName" name="post[display_user_name]" checked style="font-size: 16px; margin-top: 5px;">
                     </div>
 
-                    <!-- 送信ボタン -->
-                    <div style="margin: 30px auto; text-align: center;">
-                        <button type="submit" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">投稿</button>
-                    </div>
-                </form>
+                    <!-- ポイント消費に関する設定 -->
+                   @php
+                    $requiredPoints = 1; // 投稿に必要なポイント
+                @endphp
 
-                <!-- ハッシュタグ表示エリア -->
-                <div id="hashtagDisplayArea" style="text-align: center;">
-                    <p style="font-weight: bold;">ハッシュタグ</p>
-                    <ul id="hashtagList">
-                        <!-- ここにハッシュタグが追加されます -->
-                    </ul>
+                <div>
+                    <label for="points" style="display: block; font-size: 18px; margin-bottom: 10px;">ポイント</label>
+                    <input type="number" name="post[points]" id="points" value="5" min="0" max="{{ optional($user->point)->available_amount }}" required style="width: 50%; font-size: 16px;">
                 </div>
 
-                <div id="imageDisplayArea" style="text-align: center;">
-                    <!-- アップロード写真が表示 -->
-                </div>
+                <!-- フォーム送信時にポイントが足りているかを確認するJavaScript -->
+                <script>
+                    document.getElementById('postForm').addEventListener('submit', function(event) {
+                        var requiredPoints = {{ $requiredPoints }};
+                        var selectedPoints = parseInt(document.getElementById('points').value);
 
-                <div style="margin: 40px auto; text-align: center;">
-                    <a href="{{ route('myposts') }}">
-                        <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿一覧に戻る</span>
-                    </a>
-                </div>
+                        if (selectedPoints < requiredPoints) {
+                            event.preventDefault(); // ポイントが足りない場合、フォーム送信をキャンセル
+                            alert('ポイントが足りません。');
+                        }
+                    });
+                </script>
 
+                <!-- 送信ボタン -->
+                <div style="margin: 30px auto; text-align: center;">
+                    <button type="submit" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer;">投稿</button>
+                </div>
+            </div>
+
+            <!-- ハッシュタグ表示エリア -->
+            <div id="hashtagDisplayArea" style="text-align: center;">
+                <p style="font-weight: bold;">ハッシュタグ</p>
+                <ul id="hashtagList">
+                    <!-- ここにハッシュタグが追加されます -->
+                </ul>
+            </div>
+
+            <div id="imageDisplayArea" style="text-align: center;">
+                <!-- アップロード写真が表示 -->
+            </div>
+
+            <div style="margin: 40px auto; text-align: center;">
+                <a href="{{ route('myposts') }}">
+                    <span style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; font-size: 16px;">投稿一覧に戻る</span>
+                </a>
+            </div>
+        </form>
+    @else
+        <!-- ユーザーがログインしていない場合に表示されるコンテンツ -->
+        <p>ログインしてください。</p>
+    @endif
                 <script>
                     function onCancelClick() {
                         var userInput = document.getElementById('postForm').elements['post[title]'].value; // ユーザーが入力した内容を取得
@@ -125,9 +152,7 @@
                         margin-bottom: 20px;
                     }
                 </style>
-            @else
-                <!-- ユーザーがログインしていない場合に表示されるコンテンツ -->
-                <p>ログインしてください。</p>
-            @endif
+            </div>
+
         </form>
     </x-app-layout>
