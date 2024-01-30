@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comment.store');
     Route::post('/save-for-later/{post}', 'PostController@saveForLater')->name('saveForLater');
+    Route::get('/answer-later/{post}', 'AnswerLaterController@show')->name('answer-later.show');
 });
 
 require __DIR__.'/auth.php';

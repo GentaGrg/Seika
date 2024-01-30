@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Like;
 use App\Models\Comment;
-use Illuminate\Suport\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
     {
@@ -23,9 +23,10 @@ class PostController extends Controller
     
     public function create(Category $category)
     {
-        $categories = Category::all(); 
+        $user = Auth::user();
+        $categories = Category::all();
     
-        return view('posts.create', compact('categories'));
+        return view('posts.create', compact('user', 'categories'));
     }
     
     public function show(Post $post)
