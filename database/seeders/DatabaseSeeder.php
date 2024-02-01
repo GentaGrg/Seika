@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,12 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(CategoriesTableSeeder::class); // 新しく追加
-
-        // 以下の行で PostSeeder を呼び出す
+        $this->call(CategoriesTableSeeder::class);
         $this->call(PostSeeder::class);
 
-        // こちらはコメントアウトしました
+        // 他にもコメントアウトされていたら必要なシーダーを追加してください
+
+        // 以下はコメントアウトされている例です
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
