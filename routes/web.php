@@ -11,6 +11,7 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AnswerLaterController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
 // ログイン
@@ -51,9 +52,8 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/categories/{category}', [CategoryController::class, 'index'])->middleware("auth");
 
 Route::middleware('auth')->group(function () {
-    // ProfileControllerのプロフィール編集アクション
+    Route::get('/profile/{userId}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // routes/web.php
     Route::get('/profile/{user}', 'ProfileController@show')->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', 'ProfileController@destroy')->name('profile.destroy');
@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comment.store');
     Route::post('/save-for-later/{post}', 'PostController@saveForLater')->name('saveForLater');
     Route::get('/answer-later/{post}', 'AnswerLaterController@show')->name('answer-later.show');
+    Route::post('/message/{userId}', [MessageController::class, 'create'])->middleware('auth')->name('message.create');
 });
 
 require __DIR__.'/auth.php';
