@@ -16,7 +16,9 @@ class Post extends Model
         'title',
         'body',
         'category_id',
+        'hashtags',
         'user_id',
+        'image',
     ];
 
     public function getPaginateByLimit(int $limit_count = 5)
@@ -47,5 +49,17 @@ class Post extends Model
     public function isLikedBy(User $user): bool
     {
         return $this->likes->contains($user);
+    }
+    
+    public function saveImage($file)
+    {
+        $path = $file->store('post_images', 'public');
+        $this->image = $path;
+        $this->save();
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
     }
 }

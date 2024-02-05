@@ -52,6 +52,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Category::class);
     }
+    
+    public function saveProfileImage($file)
+    {
+        $path = $file->store('profile_images', 'public');
+        $this->profile_image = $path;
+        $this->save();
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        return $this->profile_image ? asset('storage/' . $this->profile_image) : asset('images/default_profile.jpg');
+    }
 
     public function detailsAreRegistered()
     {

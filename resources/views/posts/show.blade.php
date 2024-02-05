@@ -1,9 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
+    <x-slot name="ConnectCampus">
         <a href="{{ route('index') }}" class="back-link">&#8592;</a>
     </x-slot>
 
     <style>
+        .outer-container {
+            padding: 80px; 
+            background-color: #f0f0f0;
+        }
+        
         .twitter-style-container {
             max-width: 600px;
             margin: 0 auto;
@@ -134,6 +139,7 @@
             padding: 5px 10px;
             cursor: pointer;
         }
+        
         .like-comment-save-section {
             display: flex;
             gap: 10px;
@@ -158,6 +164,7 @@
         }
 
         .comments-container {
+            display: none;
             margin-top: 10px;
             padding: 10px;
             border: 1px solid #eee;
@@ -217,6 +224,20 @@
         .comment .save-button.active {
             background-color: #1877f2;
             color: white;
+        }
+        
+        .like-comment-save-section.left {
+            justify-content: flex-start;
+        }
+        
+        /* 中央寄せ */
+        .like-comment-save-section.center {
+            justify-content: center;
+        }
+        
+        /* 右寄せ */
+        .like-comment-save-section.right {
+            justify-content: flex-end;
         }
 
         .twitter-style-footer {
@@ -340,27 +361,25 @@
         </div>
         <div class="twitter-style-footer">
             <div class="like-comment-save-section">
-                <button type="button" class="like-button @if($post->isLikedBy(auth()->user())) active @endif" onclick="toggleLike(event, {{ $post->id }})">いいね</button>
-                <button type="button" class="comment-button" onclick="toggleComments({{ $post->id }})">コメント</button>
-                <button type="button" onclick="answerLaterAction({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}">
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <button type="button" class="like-button @if($post->isLikedBy(auth()->user())) active @endif" onclick="toggleLike(event, {{ $post->id }})">いいね</button>
+                    <button type="button" class="comment-button" onclick="toggleComments({{ $post->id }})">コメント</button>
+                </div>
+                <button type="button" onclick="answerLaterAction({{ $post->id }})" class="save-button @if(auth()->user()->hasSavedPost($post->id)) active @endif" data-post-id="{{ $post->id }}" style="margin-left: auto;">
                     後で答える
                 </button>
             </div>
-            <!-- コメントセクション -->
-            <div id="comments-container-{{ $post->id }}" class="comments-container">
-                <form action="{{ route('comment.store', ['post' => $post->id]) }}" method="post">
-                    @csrf
-                    <textarea name="body" placeholder="コメントを入力してください"></textarea>
-                    <button type="submit">コメントする</button>
-                </form>
-            </div>
-            <div class="comments-list">
-                @foreach($post->comments as $comment)
-                    <div class="comment">
-                    </div>
-                @endforeach
-            </div>
         </div>
+        
+        <!-- コメントコンテナとリストをlike-comment-save-section内に移動 -->
+    <div id="comments-container-{{ $post->id }}" class="comments-container">
+        <form action="{{ route('comment.store', ['post' => $post->id]) }}" method="post">
+            @csrf
+            <textarea name="body" placeholder="コメントを入力してください"></textarea>
+            <button type="submit">コメントする</button>
+        </form>
+        <div class="comments-list">
+            <!-- コメントのループ -->
             @foreach($post->comments as $comment)
                 <div class="comment">
                     <div class="user-info">
@@ -368,10 +387,10 @@
                         {{ $comment->created_at->diffForHumans() }}
                     </div>
                     <p class="body">{{ $comment->body }}</p>
-                    <div class="like-comment-save-section">
+                    <div class="like-comment-save-section left">
                         <button type="button" class="like-button" onclick="toggleLike(event, {{ $comment->id }})">いいね</button>
                         <button type="button" class="comment-button" onclick="toggleComments({{ $comment->id }})">コメント</button>
-                        <button type="button" onclick="saveForLaterComment({{ $comment->id }})" class="save-button @if(auth()->user()->hasSavedComment($comment->id)) active @endif" data-comment-id="{{ $comment->id }}">
+                        <button type="button" onclick="saveForLaterComment({{ $comment->id }})" class="save-button right @if(auth()->user()->hasSavedComment($comment->id)) active @endif" data-comment-id="{{ $comment->id }}">
                             後で答える
                         </button>
                     </div>
@@ -379,6 +398,7 @@
             @endforeach
         </div>
     </div>
+
 
     <script>
         function toggleLike(event, postId) {
@@ -399,28 +419,35 @@
             const commentsDiv = document.getElementById(`comments-container-${postId}`);
             commentsDiv.style.display = (commentsDiv.style.display === 'none' || commentsDiv.style.display === '') ? 'block' : 'none';
         }
-
-        function submitComment(event, postId) {
+    
+        async function submitComment(event, postId) {
             // コメントの提出処理はここで処理します
             event.preventDefault();
-            console.log('Post ID:', postId);
-    
-            const commentTextarea = document.querySelector(`comments-container-${postId} textarea`);
-            const commentBody = commentTextarea.value;
-    
-            axios.post(`/comment`, {
+        console.log('Post ID:', postId);
+
+        const commentTextarea = document.querySelector(`#comments-container-${postId} textarea`);
+        const commentBody = commentTextarea.value;
+
+        try {
+            // コメントの非同期送信
+            const response = await axios.post(`/comment`, {
                 post_id: postId,
                 body: commentBody
-            })
-            .then(response => {
-                console.log('成功:', response.data);
-                // コメントの提出後にtextareaをクリア
-                commentTextarea.value = '';
-            })
-            .catch(error => {
-                console.error('エラー:', error);
             });
+
+            // コメントの提出後にリストに即座に追加
+            const commentsList = document.querySelector(`#comments-container-${postId} .comments-list`);
+            const newCommentDiv = document.createElement('div');
+            newCommentDiv.classList.add('comment');
+            newCommentDiv.innerHTML = `<p>${response.data.body}</p>`;
+            commentsList.appendChild(newCommentDiv);
+
+            // コメントの提出後にtextareaをクリア
+            commentTextarea.value = '';
+        } catch (error) {
+            console.error('エラー:', error);
         }
+    }
         
         function toggleActions() {
             const actionsContainer = document.querySelector('.actions');
