@@ -53,6 +53,16 @@ class User extends Authenticatable
         return $this->hasMany(Category::class);
     }
     
+    public function posts()
+    {
+        return $this->hasMany('App\Models\Post');
+    }
+    
+    public function comments()
+    {
+        return $this->hasMany('App\Models\Comment');
+    }
+    
     public function saveProfileImage($file)
     {
         $path = $file->store('profile_images', 'public');

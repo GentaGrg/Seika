@@ -26,12 +26,12 @@ class PostController extends Controller
     {
         $user = Auth::user();
         $categories = Category::all();
-
         return view('posts.create', compact('user', 'categories'));
     }
 
     public function show(Post $post)
     {
+        $post->load('comments.user');
         return view('posts.show')->with('post', $post);
     }
 
@@ -55,21 +55,21 @@ class PostController extends Controller
 
             $validatedData = $request->validated();
 
-            $input = $request->input('post');
-            $input['user_id'] = auth()->user()->id;
+            $post = new Post();
+            $post->title = $request->input('title');
+            $post->body = $request->input('body');
+            $post->user_id = auth()->user()->id;
 
-            $displayUserName = $request->input('post.display_user_name', true);
-
-            $input['display_user_name'] = $displayUserName;
-            $post->fill($input)->save();
-
-            if ($request->hasFile('file_attachment')) {
-                $post->saveImage($request->file('file_attachment'));
+            // 画像のアップロード処理
+            if ($request->hasFile('image')) {
+                $imageName = time() . '_' . $request->file('image')->getClientOriginalName();
+                $request->file('image')->storeAs('public/images', $imageName);
+                $post->image = 'images/' . $imageName;
             }
 
-            auth()->user()->decreasePoints(1);
+            $post->save();
 
-            return redirect()->route('posts.index');
+            return redirect()->route('posts.index')->with('message', 'Post created successfully.');
 
         } catch (\Exception $e) {
             \Log::error('Error storing post: ' . $e->getMessage());
@@ -105,6 +105,11 @@ class PostController extends Controller
     {
         auth()->user()->likes()->toggle($postId);
         return redirect()->back();
+    }
+    
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
     
     public function commentPost(Request $request, $postId)

@@ -379,9 +379,11 @@
             <button type="submit">コメントする</button>
         </form>
         <div class="comments-list">
-            <!-- コメントのループ -->
-            @foreach($post->comments as $comment)
+            @if($post->comments->isNotEmpty())
+                <p>Comments Exist!</p>
+                @foreach($post->comments as $comment)
                 <div class="comment">
+                    <p>{{ $comment->body }}</p>
                     <div class="user-info">
                         <span class="user-name">{{ $comment->user->name }},</span>
                         {{ $comment->created_at->diffForHumans() }}
@@ -396,6 +398,9 @@
                     </div>
                 </div>
             @endforeach
+        @else
+            <p>コメントがありません。</p>
+        @endif
         </div>
     </div>
 
@@ -425,7 +430,7 @@
             event.preventDefault();
         console.log('Post ID:', postId);
 
-        const commentTextarea = document.querySelector(`#comments-container-${postId} textarea`);
+        const commentTextarea = document.querySelector(`comments-container-${postId} textarea`);
         const commentBody = commentTextarea.value;
 
         try {
@@ -436,7 +441,7 @@
             });
 
             // コメントの提出後にリストに即座に追加
-            const commentsList = document.querySelector(`#comments-container-${postId} .comments-list`);
+            const commentsList = document.querySelector(`comments-container-${postId} .comments-list`);
             const newCommentDiv = document.createElement('div');
             newCommentDiv.classList.add('comment');
             newCommentDiv.innerHTML = `<p>${response.data.body}</p>`;

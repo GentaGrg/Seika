@@ -28,7 +28,7 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function category()
@@ -38,7 +38,7 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany('App\Models\Comment');
     }
     
     public function likes(): BelongsToMany

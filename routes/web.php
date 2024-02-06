@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/editUserDetails', [UserController::class, 'editUserDetails'])->name('editUserDetails');
     Route::post('/user/{user}/follow', [FollowController::class, 'toggleFollow'])->name('user.follow');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/post/comment/store','CommentController@store')->name('comment.store');
     Route::post('/comment/{post}', [CommentController::class, 'store'])->name('comment.store');
     Route::post('/save-for-later/{post}', 'PostController@saveForLater')->name('saveForLater');
     Route::get('/answer-later/{post}', 'AnswerLaterController@show')->name('answer-later.show');
