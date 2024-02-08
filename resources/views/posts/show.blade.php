@@ -382,28 +382,33 @@
             @if($post->comments->isNotEmpty())
                 <p>Comments Exist!</p>
                 @foreach($post->comments as $comment)
-                <div class="comment">
-                    <p>{{ $comment->body }}</p>
-                    <div class="user-info">
-                        <span class="user-name">{{ $comment->user->name }},</span>
-                        {{ $comment->created_at->diffForHumans() }}
+                    <div class="comment">
+                        <p>{{ $comment->body }}</p>
+                        <div class="user-info">
+                            <span class="user-name">{{ $comment->user->name }},</span>
+                            @if ($comment->created_at)
+                                {{ $comment->created_at->diffForHumans() }}
+                            @else
+                                {{-- created_at が null の場合の対処 --}}
+                                No creation date available
+                            @endif
+                        </div>
+                        <p class="body">{{ $comment->body }}</p>
+                        <div class="like-comment-save-section left">
+                            <button type="button" class="like-button" onclick="toggleLike(event, {{ $comment->id }})">いいね</button>
+                            <button type="button" class="comment-button" onclick="toggleComments({{ $comment->id }})">コメント</button>
+                            <button type="button" onclick="saveForLaterComment({{ $comment->id }})" class="save-button right @if(auth()->user()->hasSavedPost($comment->id)) active @endif" data-comment-id="{{ $comment->id }}">
+                                後で答える
+                            </button>
+
+                        </div>
                     </div>
-                    <p class="body">{{ $comment->body }}</p>
-                    <div class="like-comment-save-section left">
-                        <button type="button" class="like-button" onclick="toggleLike(event, {{ $comment->id }})">いいね</button>
-                        <button type="button" class="comment-button" onclick="toggleComments({{ $comment->id }})">コメント</button>
-                        <button type="button" onclick="saveForLaterComment({{ $comment->id }})" class="save-button right @if(auth()->user()->hasSavedComment($comment->id)) active @endif" data-comment-id="{{ $comment->id }}">
-                            後で答える
-                        </button>
-                    </div>
-                </div>
-            @endforeach
-        @else
-            <p>コメントがありません。</p>
-        @endif
+                @endforeach
+            @else
+                <p>コメントがありません。</p>
+            @endif
         </div>
     </div>
-
 
     <script>
         function toggleLike(event, postId) {
