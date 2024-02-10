@@ -376,6 +376,7 @@
         <form action="{{ route('comment.store', ['post' => $post->id]) }}" method="post">
             @csrf
             <textarea name="body" placeholder="コメントを入力してください"></textarea>
+            <input type="hidden" name="post_id" value="{{ $post->id }}">
             <button type="submit">コメントする</button>
         </form>
         <div class="comments-list">
