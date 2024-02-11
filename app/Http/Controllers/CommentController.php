@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
+    public function markAsBestAnswer(Comment $comment)
+    {
+        // コメントをベストアンサーとしてマークするロジックを追加
+        $comment->markAsBestAnswer();
+    
+        return response()->json(['success' => true]);
+    }
+    
     public function store(Request $request)
     {
         // バリデータを作成

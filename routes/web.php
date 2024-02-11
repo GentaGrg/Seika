@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/save-for-later/{post}', 'PostController@saveForLater')->name('saveForLater');
     Route::get('/answer-later/{post}', 'AnswerLaterController@show')->name('answer-later.show');
     Route::post('/message/{userId}', [MessageController::class, 'create'])->middleware('auth')->name('message.create');
+    Route::post('/mark-as-best-answer/{comment}', [CommentController::class, 'markAsBestAnswer']);
 });
 
 require __DIR__.'/auth.php';

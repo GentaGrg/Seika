@@ -105,10 +105,41 @@
         }
     
         /* 追加されたいいね、コメントのスタイル */
-        .like-comment-save-section {
+        .best-answer-button {
+            background-color: white;
+            border: 1px solid #1877f2;
+            color: #1877f2;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
             display: flex;
-            gap: 10px;
+            align-items: center;
         }
+    
+        .best-answer-button.active {
+            background-color: #1877f2;
+            color: white;
+        }
+    
+        /* ベストアンサー用のスタイルを追加 */
+        .like-button.best-answer-button,
+        .comment-button.best-answer-button,
+        .save-button.best-answer-button {
+            background-color: white;
+            border: 1px solid #1877f2;
+            color: #1877f2;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    
+        .like-button.best-answer-button.active,
+        .comment-button.best-answer-button.active,
+        .save-button.best-answer-button.active {
+            background-color: #1877f2;
+            color: white;
+        }
+
     
         .like-button {
             background-color: white;
@@ -227,9 +258,12 @@
         }
         
         .like-comment-save-section.left {
+            display: flex;
+            gap: 10px;
             justify-content: flex-start;
+            margin-top: 10px; 
         }
-        
+
         /* 中央寄せ */
         .like-comment-save-section.center {
             justify-content: center;
@@ -265,17 +299,27 @@
             font-weight: bold;
         }
 
+        .text-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .text-wrapper span {
+            margin-left: 5px;
+        }
+    
         .photo-area {
             margin-top: 20px;
             overflow: hidden;
         }
-
+    
         .photo-area img {
             width: 100%;
             height: auto;
             border-radius: 10px;
         }
-
+    
         .actions {
             display: none;
             position: absolute;
@@ -285,7 +329,7 @@
             gap: 10px;
             animation: slideIn 0.3s ease-out;
         }
-
+    
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -295,16 +339,21 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .text-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .text-wrapper span {
-            margin-left: 5px;
+            .comment-button.best-answer-button,
+            .save-button.best-answer-button {
+                background-color: white;
+                border: 1px solid #1877f2;
+                color: #1877f2;
+                border-radius: 4px;
+                padding: 5px 10px;
+                cursor: pointer;
+            }
+    
+            .comment-button.best-answer-button.active,
+            .save-button.best-answer-button.active {
+                background-color: #1877f2;
+                color: white;
+            }
         }
     </style>
 
@@ -396,12 +445,14 @@
                         </div>
                         <p class="body">{{ $comment->body }}</p>
                         <div class="like-comment-save-section left">
+                            <button type="button" class="like-button best-answer-button @if($comment->isBestAnswer()) active @endif" onclick="markAsBestAnswer({{ $comment->id }})">
+                                ベストアンサー
+                            </button>
                             <button type="button" class="like-button" onclick="toggleLike(event, {{ $comment->id }})">いいね</button>
                             <button type="button" class="comment-button" onclick="toggleComments({{ $comment->id }})">コメント</button>
                             <button type="button" onclick="saveForLaterComment({{ $comment->id }})" class="save-button right @if(auth()->user()->hasSavedPost($comment->id)) active @endif" data-comment-id="{{ $comment->id }}">
                                 後で答える
                             </button>
-
                         </div>
                     </div>
                 @endforeach
@@ -412,6 +463,20 @@
     </div>
 
     <script>
+        function markAsBestAnswer(commentId) {
+            const BestAnswerButton = event.currentTarget;
+            BestAnswerButton.classList.toggle('active');
+
+            // サーバー上でいいねのステータスを更新するためのAJAXリクエストを行う
+            axios.post('/like/' + postId)
+                .then(response => {
+                    // サーバーからの応答に応じて必要な処理を追加できます
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    
         function toggleLike(event, postId) {
             const likeButton = event.currentTarget;
             likeButton.classList.toggle('active');
@@ -436,7 +501,7 @@
             event.preventDefault();
         console.log('Post ID:', postId);
 
-        const commentTextarea = document.querySelector(`comments-container-${postId} textarea`);
+        const commentTextarea = document.querySelector(`#comments-container-${postId} textarea`);
         const commentBody = commentTextarea.value;
 
         try {
